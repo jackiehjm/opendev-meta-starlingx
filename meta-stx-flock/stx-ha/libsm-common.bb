@@ -8,7 +8,10 @@ SUBPATH0 = "service-mgmt/sm-common"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
-SRC_URI += "file://0001-stx-ha-fix-hardcoded-path-for-sm.patch;striplevel=3"
+SRC_URI += " \
+	file://0001-stx-ha-fix-hardcoded-path-for-sm.patch;striplevel=3 \
+	file://0001-libsm_watchdog_nfs-add-missing-dependency-on-libsm_c.patch;striplevel=3 \
+	"
 
 DEPENDS_append = " \
 	glib-2.0 \
