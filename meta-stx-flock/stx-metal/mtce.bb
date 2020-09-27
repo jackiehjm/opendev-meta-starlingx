@@ -12,6 +12,8 @@ SRC_URI += " \
 	file://0002-mtce-Adjust-paths.patch \
 	file://mtce-set-systemctl-path.patch \
 	file://pmon_send_pulse.patch;striplevel=3 \
+	file://mtce-do-not-use-which-to-check-CC.patch \
+	file://mtce-libamon-add-shared-option.patch \
 	"
 
 PACKAGES += " ${PN}-pmon"
