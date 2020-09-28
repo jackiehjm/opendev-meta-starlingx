@@ -203,6 +203,7 @@ RDEPENDS_packagegroup-stx-integ = " \
 	kubernetes \
 	ldapscripts \
 	python-3parclient \
+	python-cherrypy \
 	python-lefthandclient \
 	python-setuptools \
 	python-ryu \
