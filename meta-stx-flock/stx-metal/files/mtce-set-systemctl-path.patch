@@ -7,7 +7,7 @@ index 7b5977d..c1d01b5 100644
          ilog ("Service:%s\n", ptr->service ? ptr->service : "unknown");
  
 -        #define SYSTEMCTL_CMD "/usr/bin/systemctl"
-+        #define SYSTEMCTL_CMD "/bin/systemctll"
++        #define SYSTEMCTL_CMD "/bin/systemctl"
          #define   RESTART_CMD "restart"
          #define     START_CMD "start"
          if ( get_ctrl_ptr()->recovery_method == PMOND_RECOVERY_METHOD__SYSTEMD )
