@@ -135,6 +135,8 @@ EOF
     install -m 755 ${WORKDIR}/${DSTSUFX0}/files/init ${D}/${sysconfdir}/init.d/dnsmasq
 }
 
+DISTRO_FEATURES_BACKFILL_CONSIDERED_remove = "sysvinit"
+
 CONFFILES_${PN} = "${sysconfdir}/dnsmasq.conf"
 
 RPROVIDES_${PN} += "${PN}-systemd"
