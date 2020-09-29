@@ -48,4 +48,6 @@ do_install_append () {
     chmod 640 ${D}/${sysconfdir}/snmp/snmptrapd.conf
 }
 
-FILES_${PN}_append = " ${sysconfdir}/rc.d/init.d/snmpd"
+DISTRO_FEATURES_BACKFILL_CONSIDERED_remove = "sysvinit"
+
+FILES_${PN}-server-snmpd_append = " ${sysconfdir}/rc.d/init.d/snmpd"
