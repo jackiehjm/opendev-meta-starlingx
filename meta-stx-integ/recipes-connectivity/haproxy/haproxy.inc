@@ -103,6 +103,8 @@ do_install() {
 	install -p -D -m 0755 ${WORKDIR}/stx-configfiles/files/haproxy.sh ${D}/${sysconfdir}/init.d/haproxy
 }
 
+DISTRO_FEATURES_BACKFILL_CONSIDERED_remove = "sysvinit"
+
 FILES_${PN} = " \
 	${bindir} \
 	${sbindir} \
