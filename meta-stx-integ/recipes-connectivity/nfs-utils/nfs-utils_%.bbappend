@@ -48,6 +48,9 @@ do_install_append() {
 	install -m 0755 ${S}/nfs.conf ${D}${sysconfdir}
 	sed -i -e 's/#\(\[nfsd\]\)/\1/' -e 's/#\( udp=\).*/\1y/' ${D}${sysconfdir}/nfs.conf
 
+	# add initial exports file
+	echo "# Initial exports for nfs" > ${D}${sysconfdir}/exports
+
 	# Libdir here is hardcoded in other scripts.
 	install -d -m 0755 ${D}/usr/lib/ocf/resource.d/platform/
 	install -D -m 755 ${WORKDIR}/${DSTSUFX0}/filesystem-scripts-1.0/nfsserver-mgmt \
