@@ -17,6 +17,7 @@ SRC_URI += " \
         git://opendev.org/starlingx/config-files.git;protocol=https;destsuffix=${DSTSUFX0};branch="r/stx.3.0";subpath=${SUBPATH0};name=opendev \
         git://opendev.org/starlingx/config-files.git;protocol=https;destsuffix=${DSTSUFX1};branch="r/stx.3.0";subpath=${SUBPATH1};name=opendev \
         file://nfsserver-remvoe-the-f-option-for-rpc.mountd.patch;patchdir=../${DSTSUFX1};striplevel=2 \
+        file://nfsserver.service-add-dependency-on-rpcbind.service.patch;patchdir=../${DSTSUFX1};striplevel=2 \
 "
 
 do_unpack_append() {
