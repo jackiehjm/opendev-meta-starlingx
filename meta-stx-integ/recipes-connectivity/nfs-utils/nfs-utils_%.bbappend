@@ -29,9 +29,13 @@ do_copy_config_files () {
 }
 
 inherit systemd
-SYSTEMD_PACKAGES += "${PN}"
-SYSETMD_SERVICE_${PN}_append = "uexport.service nfscommon.service"
+
+PACKAGES =+ "${PN}-config"
+SYSTEMD_PACKAGES += "${PN} ${PN}-config"
+SYSETMD_SERVICE_${PN}-config = "uexport.service nfscommon.service"
 SYSTEMD_AUTO_ENABLE_${PN} = "disable"
+SYSTEMD_AUTO_ENABLE_${PN}-config = "enable"
+
 DISTRO_FEATURES_BACKFILL_CONSIDERED_remove = "sysvinit"
 
 do_install_append() {
@@ -64,4 +68,10 @@ do_install_append() {
 
 }
 
+FILES_${PN}-config = "\
+	${systemd_system_unitdir}/nfscommon.service \
+	${systemd_system_unitdir}/nfsserver.service \
+	${systemd_system_unitdir}/uexportfs.service \
+	${sysconfdir}/nfsmount.conf \
+	"
 FILES_${PN}_append = " usr/lib/ocf/resource.d"
