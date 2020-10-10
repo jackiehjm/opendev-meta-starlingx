@@ -17,6 +17,8 @@ feed_dir = "/www/pages/feed/rel-${STX_REL}"
 
 DEPENDS += "perl-native"
 
+inherit deploy
+
 do_unpack_append() {
     bb.build.exec_func('do_restore_files', d)
 }
@@ -43,6 +45,13 @@ do_install_prepend () {
 	install -d -m 0755 ${D}/extra_cfgs
 	install -D -m 0444 extra_cfgs/* ${D}/extra_cfgs
 }
+
+do_deploy () {
+	mkdir -p ${DEPLOYDIR}/stx-kickstarts
+	cp -f ${S}/generated/* ${DEPLOYDIR}/stx-kickstarts
+}
+
+addtask do_deploy after do_compile before do_build
 
 FILES_${PN} = "${feed_dir}"
 FILES_${PN}-pxeboot = "/pxeboot"
