@@ -37,7 +37,11 @@ DISTRO_FEATURES_BACKFILL_CONSIDERED_remove = "sysvinit"
 do_install_append() {
 	mv ${D}/${sbindir}/sm-notify ${D}/${sbindir}/nfs-utils-client_sm-notify
 	install -D -m 755 ${WORKDIR}/${DSTSUFX0}/filesystem-scripts-1.0/uexportfs ${D}/${sysconfdir}/init.d/uexportfs 
-	
+
+	# install nfs.conf and enable udp proto
+	install -m 0755 ${S}/nfs.conf ${D}${sysconfdir}
+	sed -i -e 's/#\(\[nfsd\]\)/\1/' -e 's/#\( udp=\).*/\1y/' ${D}${sysconfdir}/nfs.conf
+
 	# Libdir here is hardcoded in other scripts.
 	install -d -m 0755 ${D}/usr/lib/ocf/resource.d/platform/
 	install -D -m 755 ${WORKDIR}/${DSTSUFX0}/filesystem-scripts-1.0/nfsserver-mgmt \
