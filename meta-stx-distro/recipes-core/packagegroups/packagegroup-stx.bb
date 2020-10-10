@@ -69,6 +69,7 @@ RDEPENDS_packagegroup-stx-config-files  = " \
 	openvswitch \
 	systemd \
 	nfs-utils \
+	nfs-utils-config \
 	iptables \
 	logrotate \
 	mlx4-init \
