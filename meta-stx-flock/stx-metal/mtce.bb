@@ -211,8 +211,8 @@ do_install() {
 	# software development files
 	install -m 644 -p -D heartbeat/mtceHbsCluster.h ${D}/${includedir}/mtceHbsCluster.h
 	install -m 755 -p -D public/libamon.so.1 ${D}/${libdir}/
-	cd ${D}/${libdir} ; ln -s libamon.so.$MAJOR libamon.so.$MAJOR.$MINOR
-	cd ${D}/${libdir} ; ln -s libamon.so.$MAJOR libamon.so
+	cd ${D}/${libdir} ; ln -s libamon.so.${MAJOR} libamon.so.${MAJOR}.${MINOR}
+	cd ${D}/${libdir} ; ln -s libamon.so.${MAJOR} libamon.so
 }
 
 FILES_${PN}-pmon = " \
