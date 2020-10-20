@@ -83,6 +83,9 @@ RDEPENDS_packagegroup-stx-config-files  = " \
 	rabbitmq-server \
 	rsync \
 	base-files \
+	audit \
+	auditd \
+	audit-python \
 	"
 
 RDEPENDS_packagegroup-stx-fault = " \
