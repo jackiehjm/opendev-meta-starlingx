@@ -1,11 +1,21 @@
-meta-stx
+meta-starlingx
 =========
 
 Introduction
 ------------------------
 
-This layer enables starlingx on poky.
+StarlingX is a complete cloud infrastructure software stack for the edge used by
+the most demanding applications in industrial IOT, telecom, video delivery and
+other ultra-low latency use cases. With deterministic low latency required by
+edge applications, and tools that make distributed edge manageable, StarlingX
+provides a container-based infrastructure for edge implementations in scalable
+solutions that is ready for production now.
 
+For more info on StarlingX See:
+
+https://www.starlingx.io/
+
+This layer enables StarlingX on poky.
 
 Dependencies
 -------------------------
@@ -68,24 +78,38 @@ This layer depends on:
 	branch: warrior
 	revision: HEAD
 
+	URI: git://git.yoctoproject.org/meta-anaconda
+	layer: meta-anaconda
+	branch: warrior
+	revision: HEAD
+
 ```
 You are solely responsible for determining the appropriateness of using or redistributing the above dependencies and assume any risks associated with your exercise of permissions under the license.
 
 Maintenance
 -------------------------
 
-Maintainer:
+Maintainers:
 
-Babak A. Sarashki
+Submit bug reports via launchpad and story board with [MultiOS][Yocto] tags.
+
+- Saul Wold <saul.wold@windriver.com>
+- Jackie Huang <jackie.huang@windriver.com>
+- Babak A. Sarashki <babak.sarashki@windriver.com>
 
 Build:
 ---------------------------
 
-Tasks:
-- Build Runtime image
-- Build Installer image
+A build script is found at git@github.com:zbsarashki/staging-stx.git.
 
-Build Runtime image:
+Setup Build Environment
+---------------------------
+
+Tasks:
+- Setup and Build Runtime image
+- Setup and Build Installer image
+
+Setup and Build Runtime image:
 ---------------------------
 
 Setup build environment with the following added to the bblayers.conf:
@@ -125,10 +149,10 @@ Edit conf/local.conf and set:
 
 ```
 MACHINE = "intel-corei7-64"
-PREFERRED_PROVIDER_virtual/kernel = "linux-yocto"
+PREFERRED_PROVIDER_virtual/kernel = "linux-yocto-rt"
 IMAGE_FSTYPES = " tar.bz2"
-IMAGE_FSTYPES = " tar.bz2 live"
-LABELS_LIVE = "install"
+IMAGE_FSTYPES_remove = " wic"
+IMAGE_FSTYPES_remove = " ext4"
 EXTRA_IMAGE_FEATURES ?= "debug-tweaks"
 EXTRA_IMAGE_FEATURES += "tools-sdk"
 EXTRA_IMAGE_FEATURES += "tools-debug"
@@ -143,7 +167,7 @@ Build target with:
 bitbake stx-image-aio
 ```
 
-Build Installer image:
+Setup and Build Installer image:
 ---------------------------
 Setup build environment with the bblayers.conf as in RunTime image.
 
@@ -153,7 +177,7 @@ Edit conf/local.conf and set:
 CONF_VERSION = "1"
 DISTRO = 'anaconda'
 MACHINE = "intel-corei7-64"
-PREFERRED_PROVIDER_virtual/kernel = "linux-yocto-rt"
+PREFERRED_PROVIDER_virtual/kernel = "linux-yocto"
 INSTALLER_TARGET_BUILD = "/<PATH_TO_RUNTIME_STX_PRJ_DIR>/build/"
 INSTALLER_TARGET_IMAGE = "stx-image-aio"
 
@@ -168,9 +192,10 @@ bitbake stx-image-installer-aio
 Use Case:
 ---------------------------
 
-This layer currently limited to AIO simplex mode has been tested to provision on virtualized host as outlined at:
+This layer currently limited to AIO simplex mode has been tested to provision on host as outlined at:
 
-https://docs.starlingx.io/deploy_install_guides/r3_release/virtual/aio_simplex.html
+- https://docs.starlingx.io/deploy_install_guides/r3_release/virtual/aio_simplex.html
+- https://docs.starlingx.io/deploy_install_guides/r3_release/bare_metal/aio_simplex.html
 
 License
 -------
@@ -198,7 +223,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
 
 # Legal Notices
 
