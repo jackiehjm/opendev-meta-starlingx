@@ -73,7 +73,7 @@ do_install() {
 	ln -fs pxelinux.cfg/grub.cfg ${D}/pxeboot/grub.cfg
 }
 
-pkg_postinst_pxe-network_installer() {
+pkg_postinst_pxe-network-installer() {
         install -m 0644 $D${datadir}/syslinux/menu.c32 $D/pxeboot
         install -m 0644 $D${datadir}/syslinux/vesamenu.c32 $D/pxeboot
         install -m 0644 $D${datadir}/syslinux/chain.c32 $D/pxeboot
