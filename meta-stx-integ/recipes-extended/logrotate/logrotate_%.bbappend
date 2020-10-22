@@ -24,8 +24,8 @@ do_copy_config_files () {
 
 do_install_append() {
     install -d -m0755 ${D}/${sysconfdir}/cron.d/
-    install -m 644 ${WORKDIR}/${DSTSUFX0}/files/logrotate-cron.d ${D}/${sysconfdir}/cron.d/logrorate
-    install -m 644 ${WORKDIR}/${DSTSUFX0}/files/logrotate.conf ${D}/${sysconfdir}/logrorate.conf
+    install -m 644 ${WORKDIR}/${DSTSUFX0}/files/logrotate-cron.d ${D}/${sysconfdir}/cron.d/logrotate
+    install -m 644 ${WORKDIR}/${DSTSUFX0}/files/logrotate.conf ${D}/${sysconfdir}/logrotate.conf
     #mv ${D}/${sysconfdir}/cron.daily/logrotate ${D}/${sysconfdir}/logrotate.cron
     #chmod 700 ${D}/${sysconfdir}/logrotate.cron
 }
