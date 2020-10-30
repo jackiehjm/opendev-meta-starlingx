@@ -6,3 +6,5 @@ auto lo
 iface lo inet loopback
 EOF
 }
+
+RDEPENDS_${PN} += "ifupdown"
