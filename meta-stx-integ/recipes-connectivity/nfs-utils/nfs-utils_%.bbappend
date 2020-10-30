@@ -5,7 +5,7 @@ DSTSUFX0 = "stx-configfiles"
 SUBPATH1 = "nfs-utils-config"
 DSTSUFX1 = "stx-nfs-utils"
 
-
+FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 LICENSE_append = "& Apache-2.0"
 LIC_FILES_CHKSUM += "\
@@ -16,6 +16,7 @@ LIC_FILES_CHKSUM += "\
 SRC_URI += " \
         git://opendev.org/starlingx/config-files.git;protocol=https;destsuffix=${DSTSUFX0};branch="r/stx.3.0";subpath=${SUBPATH0};name=opendev \
         git://opendev.org/starlingx/config-files.git;protocol=https;destsuffix=${DSTSUFX1};branch="r/stx.3.0";subpath=${SUBPATH1};name=opendev \
+        file://nfsserver-remove-the-f-option-for-rpc.mountd.patch;patchdir=../${DSTSUFX1};striplevel=2 \
 "
 
 do_unpack_append() {
