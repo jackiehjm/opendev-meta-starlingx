@@ -41,7 +41,7 @@ do_install_append () {
 
 
     install -D -m700 ${S}/fm_event_syslogger ${D}/${sbindir}/fm_event_syslogger
-    install -D -m644 ${S}/syslog-ng.logrotate ${D}/${sysconfdir}/logortate.d/syslog
+    install -D -m644 ${S}/syslog-ng.logrotate ${D}/${sysconfdir}/logrotate.d/syslog
     install -D -m644 ${S}/remotelogging.conf ${D}/${sysconfdir}/syslog-ng/remotelogging.conf
     install -D -m644 ${S}/syslog-ng.conf ${D}/${sysconfdir}/syslog-ng/syslog-ng.conf
 
