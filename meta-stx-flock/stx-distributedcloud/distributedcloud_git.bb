@@ -5,9 +5,9 @@ LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://distributedcloud/LICENSE;md5=1dece7821bf3fd70fe1309eaa37d52a2"
 
 PROTOCOL = "https"
-BRANCH = "r/stx.3.0"
+BRANCH = "r/stx.5.0"
 SRCNAME = "distcloud"
-SRCREV = "8329259704a5becd036663fc7de9b7a61f4bc27e"
+SRCREV = "d8ce118e50f1d30b9b4d6b3e0b17d45d497ab4af"
 PV = "1.0.0+git${SRCPV}"
 S = "${WORKDIR}/git"
 
@@ -15,6 +15,7 @@ SRC_URI = " \
 	git://opendev.org/starlingx/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
 	"
 
+PACKAGES += "distributedcloud-dccommon"
 PACKAGES += "distributedcloud-dcmanager"
 PACKAGES += "distributedcloud-dcorch"
 PACKAGES += "distributedcloud-dcdbsync"
@@ -99,11 +100,17 @@ do_install() {
 	# Install systemd unit files
 	install -p -D -m 0644 centos/files/dcmanager-api.service ${D}/${systemd_system_unitdir}/
 	install -p -D -m 0644 centos/files/dcmanager-manager.service ${D}/${systemd_system_unitdir}/
+	install -p -D -m 0644 centos/files/dcmanager-audit.service ${D}/${systemd_system_unitdir}/
+	install -p -D -m 0644 centos/files/dcmanager-audit-worker.service ${D}/${systemd_system_unitdir}/
+	install -p -D -m 0644 centos/files/dcmanager-orchestrator.service ${D}/${systemd_system_unitdir}/
 	install -p -D -m 0755 centos/files/dcmanager.conf ${D}/${sysconfdir}/tempfiles.d
 
 	# Install default config files
 	# defer postinst_ontarget
 	install -p -m 0644 dcmanager//config-generator.conf ${D}/${SRCPATH}/dcmanager-config-generator.conf
+
+	install -p -D -m 0644 centos/files/distcloud-syslog.conf ${D}/${sysconfdir}/syslog-ng/conf.d/distcloud.conf
+	install -p -D -m 0644 centos/files/distcloud-logrotate.conf ${D}/${sysconfdir}/logrotate.d/distcloud.conf
 
 	# dcorch
 	install -d -m 0755 ${D}/var/log/dcorch
@@ -114,7 +121,6 @@ do_install() {
 	install -p -D -m0644 centos/files/dcorch-api.service ${D}/${systemd_system_unitdir}/
 	install -p -D -m0644 centos/files/dcorch-engine.service ${D}/${systemd_system_unitdir}/
 	install -p -D -m0644 centos/files/dcorch-sysinv-api-proxy.service ${D}/${systemd_system_unitdir}/
-	install -p -D -m0644 centos/files/dcorch-snmp.service ${D}/${systemd_system_unitdir}/
 	install -p -D -m0644 centos/files/dcorch-identity-api-proxy.service ${D}/${systemd_system_unitdir}/
 	install -p -D -m0644 centos/files/dcorch.conf ${D}/${sysconfdir}/tempfiles.d
 
@@ -123,14 +129,16 @@ do_install() {
 	install -m 0644 \
 		ocf/dcdbsync-api \
 		ocf/dcmanager-api \
+		ocf/dcmanager-audit \
+		ocf/dcmanager-audit-worker \
 		ocf/dcmanager-manager \
+		ocf/dcmanager-orchestrator \
 		ocf/dcorch-cinder-api-proxy \
 		ocf/dcorch-engine \
 		ocf/dcorch-identity-api-proxy \
 		ocf/dcorch-neutron-api-proxy \
 		ocf/dcorch-nova-api-proxy \
 		ocf/dcorch-patch-api-proxy \
-		ocf/dcorch-snmp \
 		ocf/dcorch-sysinv-api-proxy ${D}/${libdir}/ocf/resource.d/openstack/
 
 	# Install default config files
@@ -151,6 +159,10 @@ do_install() {
 	# Install default config files
 	# defer postinst_ontarget
 	install -p -m 0644 dcdbsync/config-generator.conf ${D}/${SRCPATH}/dcdbsync-config-generator.conf
+
+	# install dcorch cleaner
+	install -p -D -m 755 centos/files/clean-dcorch ${D}/${bindir}/clean-dcorch
+
 }
 
 
@@ -207,19 +219,30 @@ FILES_distributedcloud-dcorch = " \
 	${systemd_system_unitdir}/dcorch-sysinv-api-proxy.service \
 	${systemd_system_unitdir}/dcorch-identity-api-proxy.service \
 	${bindir}/dcorch-manage \
-	${bindir}/dcorch-snmp \
-	${systemd_system_unitdir}/dcorch-snmp.service \
+	${bindir}/clean-dcorch \
 	${sysconfdir}/tempfiles.d/dcorch.conf \
 	/var/cache/dcorch \
 	${sysconfdir}/dcorch \
 	${datadir}/starlingx/distrbutedcloud-config-files/dcorch-config-generator.conf \
 	"
 
+FILES_distributedcloud-dccommon = " \
+	${PYTHON_SITEPACKAGES_DIR}/dccommon* \
+	${PYTHON_SITEPACKAGES_DIR}/distributedcloud-*.egg-info \
+	${sysconfdir}/syslog-ng/conf.d/distcloud.conf \
+	${sysconfdir}/logrotate.d/distcloud.conf \
+	"
+
 FILES_distributedcloud-dcmanager = " \
 	${PYTHON_SITEPACKAGES_DIR}/dcmanager \
-	${PYTHON_SITEPACKAGES_DIR}/distributedcloud-*.egg-info \
 	${bindir}/dcmanager-api \
 	${systemd_system_unitdir}/dcmanager-api.service \
+	${bindir}/dcmanager-audit \
+	${systemd_system_unitdir}/dcmanager-audit.service \
+	${bindir}/dcmanager-audit-worker \
+	${systemd_system_unitdir}/dcmanager-audit-worker.service \
+	${bindir}/dcmanager-orchestrator \
+	${systemd_system_unitdir}/dcmanager-orchestrator.service \
 	${bindir}/dcmanager-manager \
 	${systemd_system_unitdir}/dcmanager-manager.service \
 	${bindir}/dcmanager-manage \
