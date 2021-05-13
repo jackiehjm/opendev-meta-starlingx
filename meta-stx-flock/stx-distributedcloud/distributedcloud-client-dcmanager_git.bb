@@ -10,9 +10,9 @@ LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://distributedcloud-client/LICENSE;md5=1dece7821bf3fd70fe1309eaa37d52a2"
 
 PROTOCOL = "https"
-BRANCH = "r/stx.3.0"
+BRANCH = "r/stx.5.0"
 SRCNAME = "distcloud-client"
-SRCREV = "8a8f01dd3701d4793dd8cbc0147e4dca49cd7c03"
+SRCREV = "ef5241d9330abc1663973ba80728f3c0bb8bff8e"
 PV = "1.0.0+git${SRCPV}"
 S = "${WORKDIR}/git"
 
