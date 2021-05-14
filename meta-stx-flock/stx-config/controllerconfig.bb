@@ -29,10 +29,9 @@ SYSTEMD_AUTO_ENABLE_controllerconfig = "enable"
 
 do_install_append() {
 
-    install -p -D -m 700 scripts/keyringstaging ${D}/${bindir}
     install -p -D -m 700 scripts/openstack_update_admin_password ${D}/${bindir}
-    install -p -D -m 700 scripts/install_clone.py ${D}/${bindir}
-    install -p -D -m 700 scripts/finish_install_clone.sh ${D}/${bindir}
+    install -p -D -m 700 scripts/upgrade_swact_migration.py ${D}/${bindir}
+    install -p -D -m 700 scripts/image-backup.sh ${D}/${bindir}
 
     install -d -m 755 ${D}/${sysconfdir}/goenabled.d
     install -d -m 755 ${D}/${sysconfdir}/init.d
@@ -41,9 +40,7 @@ do_install_append() {
 
     ## Install Upgrade scripts
     install -d -m 755 ${D}/${sysconfdir}/upgrade.d
-    install -p -m 755 upgrade-scripts/16-neutron-move-bindings-off-controller-1.py ${D}/${sysconfdir}/upgrade.d
-    install -p -m 755 upgrade-scripts/20-sysinv-retire-ceph-cache-tier-sp.py ${D}/${sysconfdir}/upgrade.d
-
+    install -p -m 755 upgrade-scripts/* ${D}/${sysconfdir}/upgrade.d
 
     install -p -D -m 664 scripts/controllerconfig.service ${D}/${sysconfdir}/systemd/system/controllerconfig.service
     sed -i -e 's/network.target/networking.target/g'  \
