@@ -5,51 +5,66 @@ SUBPATH0 = "sysinv/sysinv/sysinv"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=1dece7821bf3fd70fe1309eaa37d52a2"
 
-SRC_URI += "file://0001-stx-config-remove-argparse-requirement-from-sysinv.patch \
+SRC_URI += " \
+	file://0001-sriovph-bring-up.patch \
 	file://0002-cgts-client-handle-exceptions-other-than-CalledProcessErr.patch;striplevel=4 \
-	file://sriovph-bring-up.patch;striplevel=4 \
 	"
 
-RDEPENDS_${PN}_append = " python bash"
 DEPENDS += " \
 	python-pbr-native \
 	"
 RDEPENDS_${PN}_append  = " \
-	python-anyjson \
+	bash \
+	gptfdisk \
+	python \
 	python-amqp \
 	python-amqplib \
-	python-passlib \
-	python-websockify \
-	python-pyparted \
+	python-anyjson \
 	python-boto3 \
 	python-botocore \
 	python-coverage \
+	python-django \
 	python-docker \
 	python-eventlet \
 	python-ipaddr \
+	python-jsonpatch \
 	python-keyring \
+	python-keystoneauth1 \
+	python-keystonemiddleware \
 	python-kubernetes \
+	python-mox3 \
 	python-netaddr \
-	python-pyudev \
+	python-oslo.concurrency \
+	python-oslo.config \
+	python-oslo.db \
+	python-oslo.i18n \
+	python-oslo.log \
+	python-oslo.rootwrap \
+	python-oslo.serialization \
+	python-oslo.service \
+	python-oslo.utils \
+	python-paramiko \
+	python-passlib \
+	python-paste \
 	python-pbr \
+	python-pecan \
+	python-psutil \
+	python-pyghmi \
+	python-pyparted \
+	python-pyudev \
+	python-pyudev \
+	python-requests \
+	python-retrying \
+	python-six \
+	python-sqlalchemy \
+	python-stevedore \
+	python-webob \
+	python-websockify \
 	python-webtest \
 	python-wsme \
-	python-six \
-	python-django \
-	python-mox3 \
-	python-oslo.i18n \
-	python-oslo.config \
-	python-oslo.concurrency \
-	python-oslo.db \
-	python-oslo.log \
-	python-oslo.utils \
-	python-pecan \
 	python2-rpm \
-	python-pyghmi \
-	python-paramiko \
-	tsconfig \
 	resource-agents \
-	gptfdisk \
+	tsconfig \
 	"
 
 inherit setuptools python-dir systemd useradd
@@ -88,12 +103,15 @@ do_install_append() {
 	
 	#install -p -D -m 755 ${D}/usr/bin/sysinv-api ${D}/usr/bin/sysinv-api
 	#install -p -D -m 755 ${D}/usr/bin/sysinv-agent ${D}/usr/bin/sysinv-agent
+	#install -p -D -m 755 ${D}/usr/bin/sysinv-fpga-agent ${D}/usr/bin/sysinv-fpga-agent
 	#install -p -D -m 755 ${D}/usr/bin/sysinv-conductor ${D}/usr/bin/sysinv-conductor
 	
 	install -d -m 755 ${D}${bindir}/
-	install -p -D -m 755 sysinv/cmd/partition_info.sh ${D}${bindir}/partition_info.sh
-	install -p -D -m 755 sysinv/cmd/manage-partitions ${D}${bindir}/manage-partitions
-	install -p -D -m 755 sysinv/cmd/query_pci_id ${D}${bindir}/query_pci_id
+	install -p -D -m 755 scripts/partition_info.sh ${D}${bindir}/partition_info.sh
+	install -p -D -m 755 scripts/validate-platform-backup.sh ${D}${bindir}/validate-platform-backup.sh
+	install -p -D -m 755 scripts/manage-partitions ${D}${bindir}/manage-partitions
+	install -p -D -m 755 scripts/query_pci_id ${D}${bindir}/query_pci_id
+	install -p -D -m 755 scripts/kube-cert-rotation.sh ${D}${bindir}/kube-cert-rotation.sh
 
 	sed -i -e 's|/usr/local/bin|${bindir}|' \
 		${D}${libdir}/python2.7/site-packages/sysinv/common/constants.py \
