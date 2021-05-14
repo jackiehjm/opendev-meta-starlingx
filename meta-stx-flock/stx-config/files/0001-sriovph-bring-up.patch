@@ -1,0 +1,35 @@
+From 8ae7bb222898be2810e29a40c5852a255682e144 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Fri, 14 May 2021 18:47:07 +0800
+Subject: [PATCH] sriovph-bring-up
+
+Upstream-Status: Pending
+
+rebase for stx 5.0
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ sysinv/puppet/interface.py | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/sysinv/puppet/interface.py b/sysinv/puppet/interface.py
+index 4dd4019..eea0565 100644
+--- a/sysinv/puppet/interface.py
++++ b/sysinv/puppet/interface.py
+@@ -969,8 +969,11 @@ def get_ethernet_network_config(context, iface, config):
+             if iface['iftype'] == constants.INTERFACE_TYPE_ETHERNET:
+                 sriovfs_path = ("/sys/class/net/%s/device/sriov_numvfs" %
+                                 get_interface_port_name(context, iface))
+-                options['pre_up'] = "echo 0 > %s; echo %s > %s" % (
+-                    sriovfs_path, iface['sriov_numvfs'], sriovfs_path)
++                sriovpf_up_cmd = ("ifconfig %s up" %
++                                get_interface_port_name(context, iface))
++                options['pre_up'] = "echo 0 > %s; echo %s > %s; %s" % (
++                    sriovfs_path, iface['sriov_numvfs'], sriovfs_path, sriovpf_up_cmd)
++
+     elif interface_class == constants.INTERFACE_CLASS_PCI_PASSTHROUGH:
+         sriovfs_path = ("/sys/class/net/%s/device/sriov_numvfs" %
+                         get_interface_port_name(context, iface))
+-- 
+2.7.4
+
