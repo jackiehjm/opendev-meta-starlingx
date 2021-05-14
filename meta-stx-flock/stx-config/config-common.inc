@@ -1,11 +1,14 @@
 DESCRIPTION = "stx-config"
 
 PROTOCOL = "https"
-BRANCH = "r/stx.3.0"
-SRCREV = "b51e4ef738e0020f11f164fd3f86399872caf3c6"
-SRCREV_opendev = "b51e4ef738e0020f11f164fd3f86399872caf3c6"
-DESTSUFFIX = "${PN}-${PV}"
-PV = "1.0.0"
+BRANCH = "r/stx.5.0"
+SRCREV = "ac3fb24b1d372b9797642862962b9403539980d1"
+
+STXPV = "1.0.0"
+DESTSUFFIX = "${BPN}-${STXPV}"
+PV = "${STXPV}+git${SRCPV}"
+
+S = "${WORKDIR}/${DESTSUFFIX}"
 
 SRC_URI = "\
 	git://opendev.org/starlingx/config.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH};destsuffix=${DESTSUFFIX};subpath=${SUBPATH0};name=opendev \
