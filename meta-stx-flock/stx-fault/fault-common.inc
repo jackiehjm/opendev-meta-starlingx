@@ -1,11 +1,14 @@
 DESCRIPTION = "stx-fault"
 
 PROTOCOL = "https"
-BRANCH = "r/stx.3.0"
-SRCREV_opendev = "2025f585c5b92890c8cb32c480b0151c7c1cb545"
-DESTSUFFIX = "${PN}-${PV}"
-SRCREV = "2025f585c5b92890c8cb32c480b0151c7c1cb545"
-PV = "1.0.0"
+BRANCH = "r/stx.5.0"
+SRCREV = "86544b085b2553515da81be4b88b267381b0c6cb"
+
+STXPV = "1.0.0"
+DESTSUFFIX = "${BPN}-${STXPV}"
+PV = "${STXPV}+git${SRCPV}"
+
+S = "${WORKDIR}/${DESTSUFFIX}"
 
 LICENSE = "Apache-2.0"
 
