@@ -1,12 +1,15 @@
 DESCRIPTION = "stx-ha"
 
 PROTOCOL = "https"
-BRANCH = "r/stx.3.0"
+BRANCH = "r/stx.5.0"
 SRCNAME = "ha"
-SRCREV = "a7b7d35b9922a3f2a8462492b7f1958f135a612d"
-SRCREV_opendev = "a7b7d35b9922a3f2a8462492b7f1958f135a612d"
-DESTSUFFIX = "${PN}-${PV}"
-PV = "1.0.0"
+SRCREV = "e8f2c3dc42ce702e7453e2633b6df468764bb27a"
+
+STXPV = "1.0.0"
+DESTSUFFIX = "${BPN}-${STXPV}"
+PV = "${STXPV}+git${SRCPV}"
+
+S = "${WORKDIR}/${DESTSUFFIX}"
 
 SRC_URI = " \
 	git://opendev.org/starlingx/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH};destsuffix=${DESTSUFFIX};subpath=${SUBPATH0};name=opendev \
