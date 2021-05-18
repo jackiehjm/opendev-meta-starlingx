@@ -175,7 +175,6 @@ RDEPENDS_packagegroup-stx-update = " \
 RDEPENDS_packagegroup-stx-integ = " \
 	dpkg \
 	dtc \
-	ibsh \
 	python-redfishtool \
 	puppet-boolean \
 	puppetlabs-create-resources \
