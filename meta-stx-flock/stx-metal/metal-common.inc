@@ -2,12 +2,15 @@ DESCRIPTION = "stx-metal"
 
 STABLE = "starlingx/master"
 PROTOCOL = "https"
-BRANCH = "r/stx.3.0"
+BRANCH = "r/stx.5.0"
 SRCNAME = "metal"
-SRCREV = "be3cf4eeb50eef55910cf9c73ea47c168005ad64"
-SRCREV_opendev = "be3cf4eeb50eef55910cf9c73ea47c168005ad64"
-DESTSUFFIX = "${PN}-${PV}"
-PV = "1.0.0"
+SRCREV = "ae753abfe9f565ae7cf7a2d4b8c4360d83b31cca"
+
+STXPV = "1.0.0"
+DESTSUFFIX = "${BPN}-${STXPV}"
+PV = "${STXPV}+git${SRCPV}"
+
+S = "${WORKDIR}/${DESTSUFFIX}"
 
 SRC_URI = " \
 	git://opendev.org/starlingx/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH};destsuffix=${DESTSUFFIX};subpath=${SUBPATH0};name=opendev \
