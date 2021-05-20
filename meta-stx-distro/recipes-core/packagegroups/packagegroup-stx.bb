@@ -111,7 +111,6 @@ RDEPENDS_packagegroup-stx-ha = " \
         "
 
 RDEPENDS_packagegroup-stx-metal = " \
-	inventory \
 	mtce \
 	mtce-pmon \
 	mtce-hwmon \
@@ -120,7 +119,6 @@ RDEPENDS_packagegroup-stx-metal = " \
 	mtce-compute \
 	mtce-control \
 	mtce-storage \
-	python-inventoryclient \
 	pxe-network-installer \
 	platform-kickstarts \
 	"
