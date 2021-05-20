@@ -39,8 +39,6 @@ do_install() {
 	install -d -m 0755 ${D}/${sbindir}
 	install -m 755 pxeboot-update.sh ${D}/${sbindir}/pxeboot-update-${STX_REL}.sh
 
-	install -m 644 bsp-files/kickstarts/post_clone_iso_ks.cfg ${D}/pxeboot/post_clone_iso_ks.cfg
-
 	install -m 644 default ${D}/pxeboot/pxelinux.cfg.files/default
 	install -m 644 default.static ${D}/pxeboot/pxelinux.cfg.files/default.static
 	install -m 644 centos-pxe-controller-install ${D}/pxeboot/pxelinux.cfg.files/pxe-controller-install-${STX_REL}
@@ -60,6 +58,8 @@ do_install() {
 	install -m 644 efi-centos-pxe-storage-install ${D}/pxeboot/pxelinux.cfg.files/efi-pxe-storage-install-${STX_REL}
 	install -m 644 efi-centos-pxe-worker_lowlatency-install ${D}/pxeboot/pxelinux.cfg.files/efi-pxe-worker_lowlatency-install-${STX_REL}
 	install -m 644 efi-centos-pxe-smallsystem_lowlatency-install ${D}/pxeboot/pxelinux.cfg.files/efi-pxe-smallsystem_lowlatency-install-${STX_REL}
+
+	ln -sf /pxeboot/EFI/grubx64.efi ${D}/pxeboot/grubx64.efi
 
 	sed -i -e "s/xxxSW_VERSIONxxx/${STX_REL}/g" \
 		-e "s/inst.ks/ks/g" \
