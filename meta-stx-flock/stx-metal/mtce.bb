@@ -7,11 +7,10 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 
 SRC_URI += " \
-	file://0001-mtce-avoid-overflowing-amon.tx_buf.patch \
 	file://0001-mtce-Use-LDFLAGS-when-linking.patch \
 	file://0002-mtce-Adjust-paths.patch \
 	file://mtce-set-systemctl-path.patch \
-	file://pmon_send_pulse.patch;striplevel=3 \
+	file://pmon_send_pulse.patch \
 	file://mtce-do-not-use-which-to-check-CC.patch \
 	file://mtce-libamon-add-shared-option.patch \
 	"
@@ -69,6 +68,7 @@ SYSTEMD_SERVICE_${PN} = " \
 	goenabled.service \
 	mtcalarm.service \
 	runservices.service \
+	crashDumpMgr.service \
 	"
 SYSTEMD_AUTO_ENABLE_${PN}-hostw= "enable"
 
@@ -106,13 +106,13 @@ do_install() {
 	install -m 755 -p -D hwmon/scripts/ocf/hwmon ${D}/${libdir}/ocf/resource.d/platform
 	
 	# Config files
-	install -m 644 -p -D scripts/mtc.ini ${D}/${sysconfdir}/mtc.ini
-	install -m 644 -p -D scripts/mtc.conf ${D}/${sysconfdir}/mtc.conf
-	install -m 644 -p -D fsmon/scripts/fsmond.conf ${D}/${sysconfdir}/mtc/fsmond.conf
-	install -m 644 -p -D hwmon/scripts/hwmond.conf ${D}/${sysconfdir}/mtc/hwmond.conf
-	install -m 644 -p -D pmon/scripts/pmond.conf ${D}/${sysconfdir}/mtc/pmond.conf
-	install -m 644 -p -D lmon/scripts/lmond.conf ${D}/${sysconfdir}/mtc/lmond.conf
-	install -m 644 -p -D hostw/scripts/hostwd.conf ${D}/${sysconfdir}/mtc/hostwd.conf
+	install -m 600 -p -D scripts/mtc.ini ${D}/${sysconfdir}/mtc.ini
+	install -m 600 -p -D scripts/mtc.conf ${D}/${sysconfdir}/mtc.conf
+	install -m 600 -p -D fsmon/scripts/fsmond.conf ${D}/${sysconfdir}/mtc/fsmond.conf
+	install -m 600 -p -D hwmon/scripts/hwmond.conf ${D}/${sysconfdir}/mtc/hwmond.conf
+	install -m 600 -p -D pmon/scripts/pmond.conf ${D}/${sysconfdir}/mtc/pmond.conf
+	install -m 600 -p -D lmon/scripts/lmond.conf ${D}/${sysconfdir}/mtc/lmond.conf
+	install -m 600 -p -D hostw/scripts/hostwd.conf ${D}/${sysconfdir}/mtc/hostwd.conf
 	
 	install -m 644 -p -D scripts/sensor_hp360_v1_ilo_v4.profile ${D}/${sysconfdir}/bmc/server_profiles.d/
 	install -m 644 -p -D scripts/sensor_hp380_v1_ilo_v4.profile ${D}/${sysconfdir}/bmc/server_profiles.d/
@@ -120,40 +120,42 @@ do_install() {
 	
 	
 	# binaries
-	install -m 755 -p -D maintenance/mtcAgent ${D}/${bindir}/mtcAgent
-	install -m 755 -p -D maintenance/mtcClient ${D}/${bindir}/mtcClient
-	install -m 755 -p -D heartbeat/hbsAgent ${D}/${bindir}/hbsAgent
-	install -m 755 -p -D heartbeat/hbsClient ${D}/${bindir}/hbsClient
-	install -m 755 -p -D pmon/pmond ${D}/${bindir}/pmond
-	install -m 755 -p -D lmon/lmond ${D}/${bindir}/lmond
-	install -m 755 -p -D pmon/pmond ${D}/${bindir}/pmond
-	install -m 755 -p -D lmon/lmond ${D}/${bindir}/lmond
-	install -m 755 -p -D hostw/hostwd ${D}/${bindir}/hostwd
-	install -m 755 -p -D fsmon/fsmond ${D}/${bindir}/fsmond
-	install -m 755 -p -D hwmon/hwmond ${D}/${bindir}/hwmond
-	install -m 755 -p -D mtclog/mtclogd ${D}/${bindir}/mtclogd
-	install -m 755 -p -D alarm/mtcalarmd ${D}/${bindir}/mtcalarmd
-	install -m 755 -p -D scripts/wipedisk ${D}/${bindir}/wipedisk
-	install -m 755 -p -D fsync/fsync ${D}/${sbindir}/fsync
+	install -m 700 -p -D maintenance/mtcAgent ${D}/${bindir}/mtcAgent
+	install -m 700 -p -D maintenance/mtcClient ${D}/${bindir}/mtcClient
+	install -m 700 -p -D heartbeat/hbsAgent ${D}/${bindir}/hbsAgent
+	install -m 700 -p -D heartbeat/hbsClient ${D}/${bindir}/hbsClient
+	install -m 700 -p -D pmon/pmond ${D}/${bindir}/pmond
+	install -m 700 -p -D lmon/lmond ${D}/${bindir}/lmond
+	install -m 700 -p -D pmon/pmond ${D}/${bindir}/pmond
+	install -m 700 -p -D lmon/lmond ${D}/${bindir}/lmond
+	install -m 700 -p -D hostw/hostwd ${D}/${bindir}/hostwd
+	install -m 700 -p -D fsmon/fsmond ${D}/${bindir}/fsmond
+	install -m 700 -p -D hwmon/hwmond ${D}/${bindir}/hwmond
+	install -m 700 -p -D mtclog/mtclogd ${D}/${bindir}/mtclogd
+	install -m 700 -p -D alarm/mtcalarmd ${D}/${bindir}/mtcalarmd
+	install -m 700 -p -D scripts/wipedisk ${D}/${bindir}/wipedisk
+	install -m 700 -p -D fsync/fsync ${D}/${sbindir}/fsync
 	install -m 700 -p -D pmon/scripts/pmon-restart ${D}/${sbindir}/pmon-restart
 	install -m 700 -p -D pmon/scripts/pmon-start ${D}/${sbindir}/pmon-start
 	install -m 700 -p -D pmon/scripts/pmon-stop ${D}/${sbindir}/pmon-stop
 	
 	# init script files
-	install -m 755 -p -D scripts/mtcClient ${D}/${sysconfdir}/init.d/mtcClient
-	install -m 755 -p -D scripts/hbsClient ${D}/${sysconfdir}/init.d/hbsClient
-	install -m 755 -p -D hwmon/scripts/lsb/hwmon ${D}/${sysconfdir}/init.d/hwmon
-	install -m 755 -p -D fsmon/scripts/fsmon ${D}/${sysconfdir}/init.d/fsmon
-	install -m 755 -p -D scripts/mtclog ${D}/${sysconfdir}/init.d/mtclog
-	install -m 755 -p -D pmon/scripts/pmon ${D}/${sysconfdir}/init.d/pmon
-	install -m 755 -p -D lmon/scripts/lmon ${D}/${sysconfdir}/init.d/lmon
-	install -m 755 -p -D hostw/scripts/hostw ${D}/${sysconfdir}/init.d/hostw
-	install -m 755 -p -D alarm/scripts/mtcalarm.init ${D}/${sysconfdir}/init.d/mtcalarm
+	install -m 700 -p -D scripts/mtcClient ${D}/${sysconfdir}/init.d/mtcClient
+	install -m 700 -p -D scripts/hbsClient ${D}/${sysconfdir}/init.d/hbsClient
+	install -m 700 -p -D hwmon/scripts/lsb/hwmon ${D}/${sysconfdir}/init.d/hwmon
+	install -m 700 -p -D fsmon/scripts/fsmon ${D}/${sysconfdir}/init.d/fsmon
+	install -m 700 -p -D scripts/mtclog ${D}/${sysconfdir}/init.d/mtclog
+	install -m 700 -p -D pmon/scripts/pmon ${D}/${sysconfdir}/init.d/pmon
+	install -m 700 -p -D lmon/scripts/lmon ${D}/${sysconfdir}/init.d/lmon
+	install -m 700 -p -D hostw/scripts/hostw ${D}/${sysconfdir}/init.d/hostw
+	install -m 700 -p -D alarm/scripts/mtcalarm.init ${D}/${sysconfdir}/init.d/mtcalarm
 	# install -m 755 -p -D scripts/config ${D}/${sysconfdir}/init.d/config
 	
 	# TODO: Init hack. Should move to proper module
 	install -m 755 -p -D scripts/hwclock.sh ${D}/${sysconfdir}/init.d/hwclock.sh
 	install -m 644 -p -D scripts/hwclock.service ${D}/${systemd_system_unitdir}/hwclock.service
+	install -m 644 -p -D scripts/crashDumpMgr ${D}/${sysconfdir}/init.d/crashDumpMgr
+	install -m 644 -p -D scripts/crashDumpMgr.service ${D}/${systemd_system_unitdir}/crashDumpMgr.service
 	
 	
 	# systemd service files
@@ -202,6 +204,7 @@ do_install() {
 	install -m 644 -p -D lmon/scripts/lmon.pmon.conf ${D}/${sysconfdir}/pmon.d/lmon.conf
 	
 	# log rotation
+	install -m 644 -p -D scripts/crashdump.logrotate ${D}/${sysconfdir}/logrotate.d/crashdump.logrotate
 	install -m 644 -p -D scripts/mtce.logrotate ${D}/${sysconfdir}/logrotate.d/mtce.logrotate
 	install -m 644 -p -D hostw/scripts/hostw.logrotate ${D}/${sysconfdir}/logrotate.d/hostw.logrotate
 	install -m 644 -p -D pmon/scripts/pmon.logrotate ${D}/${sysconfdir}/logrotate.d/pmon.logrotate
@@ -209,7 +212,12 @@ do_install() {
 	install -m 644 -p -D fsmon/scripts/fsmon.logrotate ${D}/${sysconfdir}/logrotate.d/fsmon.logrotate
 	install -m 644 -p -D hwmon/scripts/hwmon.logrotate ${D}/${sysconfdir}/logrotate.d/hwmon.logrotate
 	install -m 644 -p -D alarm/scripts/mtcalarm.logrotate ${D}/${sysconfdir}/logrotate.d/mtcalarm.logrotate
-	
+	# collect scripts
+	install -m 755 -p -D scripts/collect_bmc.sh ${D}${sysconfdir}/collect.d/collect_bmc
+
+	# syslog configuration
+	install -m 644 -p -D scripts/mtce.syslog ${D}${sysconfdir}/syslog-ng/conf.d/mtce.conf
+
 	# software development files
 	install -m 644 -p -D heartbeat/mtceHbsCluster.h ${D}/${includedir}/mtceHbsCluster.h
 	install -m 755 -p -D public/libamon.so.1 ${D}/${libdir}/
@@ -275,6 +283,7 @@ FILES_${PN} = " \
         ${systemd_system_unitdir}/hbsClient.service \
         ${systemd_system_unitdir}/hwclock.service \
         ${systemd_system_unitdir}/runservices.service \
+        ${systemd_system_unitdir}/crashDumpMgr.service \
         ${sysconfdir}/pmon.d/nslcd.conf \
         ${sysconfdir}/pmon.d/mtclogd.conf \
         ${sysconfdir}/pmon.d/mtcalarm.conf \
@@ -288,6 +297,7 @@ FILES_${PN} = " \
         ${sysconfdir}/init.d/goenabled \
         ${sysconfdir}/init.d/mtcClient \
         ${sysconfdir}/init.d/hwclock.sh \
+        ${sysconfdir}/init.d/crashDumpMgr \
         ${sysconfdir}/init.d/mtclog \
         ${sysconfdir}/init.d/mtcalarm \
         ${sysconfdir}/init.d/hbsClient \
@@ -307,4 +317,7 @@ FILES_${PN} = " \
 	${sysconfdir}/logrotate.d/fsmon.logrotate \
 	${sysconfdir}/logrotate.d/mtcalarm.logrotate \
 	${sysconfdir}/logrotate.d/mtce.logrotate \
+	${sysconfdir}/logrotate.d/crashdump.logrotate \
+	${sysconfdir}/collect.d/collect_bmc \
+	${sysconfdir}/syslog-ng/conf.d/mtce.conf \
 	"
