@@ -1,12 +1,15 @@
 DESCRIPTION = "stx-monitoring"
 
 PROTOCOL = "https"
-BRANCH = "r/stx.3.0"
+BRANCH = "r/stx.5.0"
 SRCNAME = "monitoring"
-SRCREV = "8befe1720b02c5e1e3ddf637947643b9b0a0f96f"
-SRCREV_opendev = "8befe1720b02c5e1e3ddf637947643b9b0a0f96f"
-DESTSUFFIX = "${PN}-${PV}"
-PV = "1.0.0"
+SRCREV = "2c456b087506437d32af445df1c6df788da7203b"
+
+STXPV = "1.0.0"
+DESTSUFFIX = "${BPN}-${STXPV}"
+PV = "${STXPV}+git${SRCPV}"
+
+S = "${WORKDIR}/${DESTSUFFIX}"
 
 SRC_URI = " \
 	git://opendev.org/starlingx/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH};destsuffix=${DESTSUFFIX};subpath=${SUBPATH0};name=opendev \
