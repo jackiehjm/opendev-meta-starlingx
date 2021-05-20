@@ -1,24 +1,26 @@
-From 0b620c4f4936af27d915b0ec809dd2f214f4daa9 Mon Sep 17 00:00:00 2001
+From 58fb9f3fc974a8546b32612ea5df9be377ebd4d6 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
-Date: Wed, 10 Jun 2020 10:36:18 +0800
+Date: Thu, 20 May 2021 11:37:43 +0800
 Subject: [PATCH] kickstarts: adjustment fnd fixes or poky-stx
 
 Upstream-Status: Inappropriate [OE specific]
 
+Rebased for stx 5.0
+
 Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
 ---
- bsp-files/kickstarts/post_common.cfg               | 87 +++++++++++++++++-----
+ bsp-files/kickstarts/post_common.cfg               | 56 +++++++++++++++++++++-
  .../kickstarts/post_kernel_aio_and_worker.cfg      |  4 +-
  bsp-files/kickstarts/post_kernel_controller.cfg    |  4 +-
  bsp-files/kickstarts/post_kernel_storage.cfg       |  4 +-
  bsp-files/kickstarts/post_usb_controller.cfg       |  3 +-
- bsp-files/kickstarts/pre_common_head.cfg           | 33 +++++++-
- bsp-files/kickstarts/pre_pkglist.cfg               | 19 +----
- bsp-files/kickstarts/pre_pkglist_lowlatency.cfg    | 18 +----
- 8 files changed, 110 insertions(+), 62 deletions(-)
+ bsp-files/kickstarts/pre_common_head.cfg           | 33 ++++++++++++-
+ bsp-files/kickstarts/pre_pkglist.cfg               | 20 +-------
+ bsp-files/kickstarts/pre_pkglist_lowlatency.cfg    | 19 +-------
+ 8 files changed, 94 insertions(+), 49 deletions(-)
 
 diff --git a/bsp-files/kickstarts/post_common.cfg b/bsp-files/kickstarts/post_common.cfg
-index 48abb74..a166c54 100644
+index 8214008..b210694 100644
 --- a/bsp-files/kickstarts/post_common.cfg
 +++ b/bsp-files/kickstarts/post_common.cfg
 @@ -1,3 +1,55 @@
@@ -74,76 +76,34 @@ index 48abb74..a166c54 100644
 +
 +%end
 +
- %post --erroronfail
-
+ %post --nochroot --erroronfail
+ 
  # Source common functions
-@@ -31,25 +83,26 @@ else
- fi
-
- . /etc/platform/platform.conf
--# Configure smart package manager channels
--rm -rf /var/lib/smart
--mkdir /var/lib/smart
--/usr/bin/smart channel -y \
--    --add rpmdb type=rpm-sys name="RPM Database"
--/usr/bin/smart channel -y \
--    --add base type=rpm-md name="Base" baseurl=http://controller:${http_port:-8080}/feed/rel-xxxPLATFORM_RELEASExxx
--/usr/bin/smart channel -y \
--    --add updates type=rpm-md name="Patches" baseurl=http://controller:${http_port:-8080}/updates/rel-xxxPLATFORM_RELEASExxx
--
--# Configure smart to use rpm --nolinktos option
--/usr/bin/smart config --set rpm-nolinktos=true
--
--# Configure smart to use rpm --nosignature option
--/usr/bin/smart config --set rpm-check-signatures=false
-
- # Delete the CentOS yum repo files
- rm -f /etc/yum.repos.d/CentOS-*
-
-+# Create platform yum repo file
-+mkdir -p /etc/yum.repos.d
-+cat >/etc/yum.repos.d/platform.repo <<EOF
-+[platform-base]
-+name=platform-base
-+baseurl=http://controller:${http_port:-8080}/feed/rel-xxxPLATFORM_RELEASExxx
-+gpgcheck=0
-+enabled=1
-+
-+[platform-updates]
-+name=platform-updates
-+baseurl=http://controller:${http_port:-8080}/updates/rel-xxxPLATFORM_RELEASExxx
-+gpgcheck=0
-+enabled=1
-+EOF
-+
- # Persist the boot device naming as UDEV rules so that if the network device
- # order changes post-install that we will still be able to DHCP from the
- # correct interface to reach the active controller.  For most nodes only the
-@@ -73,7 +126,7 @@ done
+@@ -86,7 +138,7 @@ done
  chage -d 0 sysadmin
-
+ 
  # Lock the root password
 -passwd -l root
 +#passwd -l root
-
+ 
  # Enable tmpfs mount for /tmp
  # delete /var/tmp so that it can similinked in
-@@ -81,7 +134,7 @@ rm -rf /var/tmp
+@@ -94,7 +146,7 @@ rm -rf /var/tmp
  systemctl enable tmp.mount
-
+ 
  # Disable automount of /dev/hugepages
 -systemctl mask dev-hugepages.mount
 +#systemctl mask dev-hugepages.mount
-
+ 
  # Disable firewall
  systemctl disable firewalld
 diff --git a/bsp-files/kickstarts/post_kernel_aio_and_worker.cfg b/bsp-files/kickstarts/post_kernel_aio_and_worker.cfg
-index f228110..f4037fa 100644
+index 5d90d31..c2e1a39 100644
 --- a/bsp-files/kickstarts/post_kernel_aio_and_worker.cfg
 +++ b/bsp-files/kickstarts/post_kernel_aio_and_worker.cfg
-@@ -95,9 +95,9 @@ fi
+@@ -99,9 +99,9 @@ fi
  perl -pi -e 's/(GRUB_CMDLINE_LINUX=.*)\"/\1'"$KERN_OPTS"'\"/g' /etc/default/grub
-
+ 
  if [ -d /sys/firmware/efi ] ; then
 -  grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
 +  grub-mkconfig -o /boot/efi/EFI/centos/grub.cfg
@@ -151,15 +111,15 @@ index f228110..f4037fa 100644
 -  grub2-mkconfig -o /boot/grub2/grub.cfg
 +  grub-mkconfig -o /boot/grub/grub.cfg
  fi
-
+ 
  %end
 diff --git a/bsp-files/kickstarts/post_kernel_controller.cfg b/bsp-files/kickstarts/post_kernel_controller.cfg
-index a49f835..c076fdc 100644
+index bed07e4..669009b 100644
 --- a/bsp-files/kickstarts/post_kernel_controller.cfg
 +++ b/bsp-files/kickstarts/post_kernel_controller.cfg
-@@ -42,9 +42,9 @@ fi
+@@ -49,9 +49,9 @@ fi
  perl -pi -e 's/(GRUB_CMDLINE_LINUX=.*)\"/\1'"$KERN_OPTS"'\"/g' /etc/default/grub
-
+ 
  if [ -d /sys/firmware/efi ] ; then
 -  grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
 +  grub-mkconfig -o /boot/efi/EFI/centos/grub.cfg
@@ -167,15 +127,15 @@ index a49f835..c076fdc 100644
 -  grub2-mkconfig -o /boot/grub2/grub.cfg
 +  grub-mkconfig -o /boot/grub/grub.cfg
  fi
-
+ 
  %end
 diff --git a/bsp-files/kickstarts/post_kernel_storage.cfg b/bsp-files/kickstarts/post_kernel_storage.cfg
-index 53bff1b..fb8eac4 100644
+index 7452d80..3d39640 100644
 --- a/bsp-files/kickstarts/post_kernel_storage.cfg
 +++ b/bsp-files/kickstarts/post_kernel_storage.cfg
-@@ -36,9 +36,9 @@ fi
+@@ -43,9 +43,9 @@ fi
  perl -pi -e 's/(GRUB_CMDLINE_LINUX=.*)\"/\1'"$KERN_OPTS"'\"/g' /etc/default/grub
-
+ 
  if [ -d /sys/firmware/efi ] ; then
 -  grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
 +  grub-mkconfig -o /boot/efi/EFI/centos/grub.cfg
@@ -183,30 +143,30 @@ index 53bff1b..fb8eac4 100644
 -  grub2-mkconfig -o /boot/grub2/grub.cfg
 +  grub-mkconfig -o /boot/grub/grub.cfg
  fi
-
+ 
  %end
 diff --git a/bsp-files/kickstarts/post_usb_controller.cfg b/bsp-files/kickstarts/post_usb_controller.cfg
-index 788aee5..85ac641 100644
+index 357c542..3917d8a 100644
 --- a/bsp-files/kickstarts/post_usb_controller.cfg
 +++ b/bsp-files/kickstarts/post_usb_controller.cfg
 @@ -61,8 +61,7 @@ fi
-
+ 
  if [ -d $srcdir/Packages ] ; then
      mkdir -p /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx
 -    cp -r $srcdir/Packages /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx/Packages
 -    cp -r $srcdir/repodata /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx/repodata
 +    cp -r $srcdir/Packages/* /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx/
-     cp $srcdir/*.cfg /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx
  fi
-
+ 
+ if [ -d $srcdir/patches ]; then
 diff --git a/bsp-files/kickstarts/pre_common_head.cfg b/bsp-files/kickstarts/pre_common_head.cfg
-index 88edab4..d3c1ba9 100644
+index 01db59b..09c1828 100644
 --- a/bsp-files/kickstarts/pre_common_head.cfg
 +++ b/bsp-files/kickstarts/pre_common_head.cfg
-@@ -46,17 +46,46 @@ echo "bootloader --location=mbr $boot_device_arg --timeout=5 --append=\"$append\
+@@ -50,17 +50,46 @@ echo "bootloader --location=mbr $boot_device_arg --timeout=5 --append=\"$append\
  echo "timezone --nontp --utc UTC" >/tmp/timezone-include
  %end
-
+ 
 +##############################################################
 +# pre script for poky-stx
 +##############################################################
@@ -233,7 +193,7 @@ index 88edab4..d3c1ba9 100644
  selinux --disabled
  authconfig --enableshadow --passalgo=sha512
  firewall --service=ssh
-
+ 
 +# Use text mode install
 +text
 +
@@ -253,10 +213,10 @@ index 88edab4..d3c1ba9 100644
  # Note that any partitions you deleted are not expressed
  # here so unless you clear all partitions first, this is
 diff --git a/bsp-files/kickstarts/pre_pkglist.cfg b/bsp-files/kickstarts/pre_pkglist.cfg
-index 37fe023..16e4dcf 100644
+index 4653e74..16e4dcf 100644
 --- a/bsp-files/kickstarts/pre_pkglist.cfg
 +++ b/bsp-files/kickstarts/pre_pkglist.cfg
-@@ -1,21 +1,4 @@
+@@ -1,22 +1,4 @@
  %packages
 -@core
 -@base
@@ -264,6 +224,7 @@ index 37fe023..16e4dcf 100644
 --kernel-module-wrs-avp-rt
 --kernel-rt
 --kernel-rt-kvm
+--kernel-rt-modules-extra
 --kernel-rt-tools
 --kernel-rt-tools-libs
 --kmod-drbd-rt
@@ -278,18 +239,19 @@ index 37fe023..16e4dcf 100644
 -xxxPACKAGE_LISTxxx
 +#@^stx-image-aio
  %end
-
+ 
 diff --git a/bsp-files/kickstarts/pre_pkglist_lowlatency.cfg b/bsp-files/kickstarts/pre_pkglist_lowlatency.cfg
-index 3af6a39..16e4dcf 100644
+index a6e6f14..16e4dcf 100644
 --- a/bsp-files/kickstarts/pre_pkglist_lowlatency.cfg
 +++ b/bsp-files/kickstarts/pre_pkglist_lowlatency.cfg
-@@ -1,20 +1,4 @@
+@@ -1,21 +1,4 @@
  %packages
 -@core
 -@base
 --kernel-module-igb-uio
 --kernel-module-wrs-avp
 --kernel
+--kernel-modules-extra
 --kernel-tools
 --kernel-tools-libs
 --kmod-drbd
@@ -304,6 +266,7 @@ index 3af6a39..16e4dcf 100644
 -xxxPACKAGE_LISTxxx
 +#@^stx-image-aio
  %end
-
---
+ 
+-- 
 2.7.4
+
