@@ -1,7 +1,22 @@
-diff -ruN a/mtce/src/pmon/pmonHdlr.cpp b/mtce/src/pmon/pmonHdlr.cpp
---- a/mtce/src/pmon/pmonHdlr.cpp	2020-05-15 14:41:42.271215598 +0000
-+++ b/mtce/src/pmon/pmonHdlr.cpp	2020-05-18 07:11:16.126154700 +0000
-@@ -1881,10 +1881,7 @@
+From cc45b5ce1a57a0ecfa5bcb6131943a7fc0f6f5a6 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 20 May 2021 15:01:33 +0800
+Subject: [PATCH 4/6] pmon_send_pulse
+
+Upstream-Status: Inappropriate [poky-stx specific]
+
+Rebased for stx 5.0
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ pmon/pmonHdlr.cpp | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/pmon/pmonHdlr.cpp b/pmon/pmonHdlr.cpp
+index ba7f5ef..399bfc6 100644
+--- a/pmon/pmonHdlr.cpp
++++ b/pmon/pmonHdlr.cpp
+@@ -1923,10 +1923,7 @@ void pmon_service ( pmon_ctrl_type * ctrl_ptr )
               * we can turn this into a customer alarm/log.
               * Degrade is acheived by not sending the pulses to the watcher.
               */
@@ -12,8 +27,8 @@ diff -ruN a/mtce/src/pmon/pmonHdlr.cpp b/mtce/src/pmon/pmonHdlr.cpp
 +            pmon_send_pulse ( );
          }
  
-         /* Avoid pmond thrashing trying to recover processes during
-@@ -1930,11 +1927,9 @@
+         if ( inotify_fault == false )
+@@ -1961,11 +1958,9 @@ void pmon_service ( pmon_ctrl_type * ctrl_ptr )
              {
                  hostwd_port_init();
              }
@@ -28,3 +43,6 @@ diff -ruN a/mtce/src/pmon/pmonHdlr.cpp b/mtce/src/pmon/pmonHdlr.cpp
          }
  
          /* Run Get Events by audit timer */
+-- 
+2.7.4
+
