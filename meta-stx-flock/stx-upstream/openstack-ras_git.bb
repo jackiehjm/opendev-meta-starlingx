@@ -6,7 +6,7 @@ BRANCH = "master"
 SRCNAME = "stx-openstack-ras"
 SRCREV = "cc6f677570b4f0e7ba44a91d5dff33164b8b76bc"
 S = "${WORKDIR}/git"
-PV = "1.0.0"
+PV = "1.0.0+git${SRCPV}"
 
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://COPYING;md5=3b83ef96387f14655fc854ddc3c6bd57"
