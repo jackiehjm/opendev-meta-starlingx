@@ -2,13 +2,15 @@
 DESCRIPTION = "stx-update"
 
 PROTOCOL = "https"
-BRANCH = "r/stx.3.0"
+BRANCH = "r/stx.5.0"
 SRCNAME = "update"
-SRCREV = "2542c5539bab060830009d02cbb257cc8bf4a376"
-SRCREV_opendev = "2542c5539bab060830009d02cbb257cc8bf4a376"
-DESTSUFFIX = "${PN}-${PV}"
-PV = "1.0.0"
+SRCREV = "cb9e932614477dd3675c60a5e6d48b119e4c1c89"
 
+STXPV = "1.0.0"
+DESTSUFFIX = "${BPN}-${STXPV}"
+PV = "${STXPV}+git${SRCPV}"
+
+S = "${WORKDIR}/${DESTSUFFIX}"
 
 SRC_URI = " \
    git://opendev.org/starlingx/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH};destsuffix=${DESTSUFFIX};subpath=${SUBPATH0};name=opendev \
