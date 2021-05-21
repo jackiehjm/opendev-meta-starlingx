@@ -1,21 +1,25 @@
-From 059984de897fe2c8c48811ceb76a0331f94b3557 Mon Sep 17 00:00:00 2001
+From b97b3a2f35f8cf0a9eae975ece510c2bb27ceef9 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
-Date: Wed, 13 May 2020 22:10:01 +0800
+Date: Fri, 21 May 2021 15:24:13 +0800
 Subject: [PATCH] patch_agent: do not do the packages_iter if pkggrp is None
 
-Addn the handling of packages_iter to the else block to avoid:
+Add the handling of packages_iter to the else block to avoid:
 AttributeError: 'NoneType' object has no attribute 'packages_iter'
+
+Upstream-Status: Inappropriate [poky-stx specific]
+
+Rebased for stx 5.0
 
 Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
 ---
- cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py | 44 ++++++++++++-------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+ cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py | 45 +++++++++++++------------
+ 1 file changed, 23 insertions(+), 22 deletions(-)
 
 diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py b/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
-index d8bc375..489d484 100644
+index e895e00..8de3c0a 100644
 --- a/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
 +++ b/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
-@@ -490,29 +490,29 @@ class PatchAgent(PatchService):
+@@ -536,29 +536,30 @@ class PatchAgent(PatchService):
                  break
  
          if pkggrp is None:
@@ -64,8 +68,9 @@ index d8bc375..489d484 100644
 +            LOG.info("To install: %s", self.to_install)
 +            LOG.info("To remove: %s", self.to_remove)
 +            LOG.info("Missing: %s", self.missing_pkgs)
- 
-         return True
++
+         if len(self.duplicated_pkgs) > 0:
+             LOG.info("Duplicated: %s", self.duplicated_pkgs)
  
 -- 
 2.7.4
