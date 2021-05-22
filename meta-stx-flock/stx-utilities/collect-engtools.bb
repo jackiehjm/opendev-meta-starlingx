@@ -18,7 +18,9 @@ RDEPENDS_collect-engtools += " \
 	iperf3 \
 	bash \
 	perl \
-	python \
+	python3 \
+	python3-six \
+	python3-psutil \
 	"
 
 inherit systemd
