@@ -34,7 +34,10 @@ do_install_append() {
 	install -m0755 tc_setup.sh ${D}/${bindir}/tc_setup.sh
 	install -m0755 remotelogging_tc_setup.sh ${D}/${bindir}/remotelogging_tc_setup.sh
 	install -m0755 connectivity_test  ${D}/${bindir}/connectivity_test
-	install -m0755 update-iso.sh ${D}/${bindir}/update-iso.sh
+
+	install -m0555 update-iso.sh ${D}/${bindir}/update-iso.sh
+	install -m0555 gen-bootloader-iso.sh ${D}/${bindir}/gen-bootloader-iso.sh
+	install -m0555 stx-iso-utils.sh ${D}/${bindir}/stx-iso-utils.sh
 
 	install -p -d -m0755 ${D}/${sysconfdir}/init.d
 	install -m0755 log_functions.sh ${D}/${sysconfdir}/init.d/log_functions.sh
@@ -44,13 +47,12 @@ do_install_append() {
 	install -m0755 patch-restart-processes ${D}/${sbindir}/patch-restart-processes
 	install -m0755 patch-restart-haproxy ${D}/${sbindir}/patch-restart-haproxy
 
-
-
 	install -p -d -m0755 ${D}/${systemd_system_unitdir}
 
 	install -m0644 opt-platform.mount  ${D}/${systemd_system_unitdir}/opt-platform.mount
 	install -m0644 opt-platform.service ${D}/${systemd_system_unitdir}/opt-platform.service
 
+	install -m0750 set_keystone_user_option.sh ${D}/${bindir}/set_keystone_user_option.sh
 }
 
 FILES_${PN}_append  = " ${systemd_system_unitdir}/opt-platform.mount" 
