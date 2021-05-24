@@ -8,10 +8,10 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 RDEPENDS_${PN}_append = " \
 	systemd \
-	python-daemon \
+	python3-daemon \
 	"
 
-inherit setuptools systemd
+inherit setuptools3 systemd
 SYSTEMD_PACKAGES += "logmgmt"
 SYSTEMD_SERVICE_${PN} = "logmgmt.service"
 SYSTEMD_AUTO_ENABLE_${PN} = "enable"
@@ -42,6 +42,6 @@ do_install_append() {
 	install -m0700 pmon.d/logmgmt ${D}/${sysconfdir}/pmon.d
 
 	install -d -m0755 ${D}/${systemd_system_unitdir}
-	install -m0664 etc/systemd/system/logmgmt.service ${D}/${systemd_system_unitdir}
+	install -m0644 etc/systemd/system/logmgmt.service ${D}/${systemd_system_unitdir}
 }
 
