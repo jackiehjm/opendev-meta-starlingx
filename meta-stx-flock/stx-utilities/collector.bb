@@ -10,8 +10,6 @@ SUBPATH0 = "tools/collector/scripts"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
-SRC_URI += "file://collector-fix-service-name-binary-path.patch;striplevel=4"
-
 RDEPENDS_${PN}_append += " bash"
 
 do_configure[noexec] = "1"
@@ -51,6 +49,11 @@ do_install() {
 
 	install -m 755 etc.exclude ${D}/${sysconfdir}/collect/etc.exclude
 	install -m 755 run.exclude ${D}/${sysconfdir}/collect/run.exclude
+
+	sed -i -e 's|/usr/local/bin|${bindir}|g' \
+	       -e 's|/usr/local/sbin|${sbindir}|g' \
+	       ${D}/${sysconfdir}/collect.d/* \
+	       ${D}/${sbindir}/*
 
 	ln -sf ${sbindir}/collect ${D}/${bindir}/collect
 }
