@@ -6,9 +6,9 @@ LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://src/registry-token-server/registry-token-server/src/LICENSE;md5=d2794c0df5b907fdace235a619d80314"
 
 PROTOCOL = "https"
-BRANCH = "r/stx.3.0"
+BRANCH = "r/stx.5.0"
 SRCNAME = "containers"
-SRCREV = "1a4b803e946b488c1f3adb25ab0614d1b0c3c9b8"
+SRCREV = "a8bc70702e5ed7643dfd29195f376651b7948f90"
 PV = "1.0.0+git${SRCPV}"
 S = "${WORKDIR}/git"
 
