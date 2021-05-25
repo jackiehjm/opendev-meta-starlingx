@@ -3,18 +3,18 @@ SUMMARY = "The Docker toolset to pack, ship, store, and deliver content"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=d2794c0df5b907fdace235a619d80314"
 
-GO_PKG_PATH = "github.com/docker/distribution"
+PKG_NAME = "github.com/docker/distribution"
 GO_IMPORT = "import"
 
-SRCREV_distribution="48294d928ced5dd9b378f7fd7c6f5da3ff3f2c89"
+SRCREV_distribution="2461543d988979529609e8cb6fca9ca190dc48da"
 SRC_URI = " \
-	git://github.com/docker/distribution.git;branch=release/2.6;name=distribution;destsuffix=git/src/${GO_PKG_PATH} \
+	git://github.com/docker/distribution.git;branch=release/2.7;name=distribution;destsuffix=git/src/${PKG_NAME} \
 	file://${BPN}.service \
 	file://config.yml \
 	"
 
-PV = "v2.6.2"
-S = "${WORKDIR}/git/src/${GO_PKG_PATH}"
+PV = "v2.7.1"
+S = "${WORKDIR}/git/src/${PKG_NAME}"
 
 inherit goarch
 inherit go
@@ -71,6 +71,8 @@ SYSTEMD_AUTO_ENABLE_${BPN} = "disable"
 SYSROOT_PREPROCESS_FUNCS += "docker_distribution_sysroot_preprocess"
 
 docker_distribution_sysroot_preprocess () {
-    install -d ${SYSROOT_DESTDIR}${prefix}/local/go/src/${GO_PKG_PATH}
-    cp -r ${S} ${SYSROOT_DESTDIR}${prefix}/local/go/src/$(dirname ${GO_PKG_PATH})
+    install -d ${SYSROOT_DESTDIR}${prefix}/local/go/src/${PKG_NAME}
+    cp -r ${S} ${SYSROOT_DESTDIR}${prefix}/local/go/src/$(dirname ${PKG_NAME})
 }
+
+INSANE_SKIP_${PN} = "already-stripped ldflags"
