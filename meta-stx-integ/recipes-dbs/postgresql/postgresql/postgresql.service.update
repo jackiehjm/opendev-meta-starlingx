@@ -11,7 +11,7 @@ Group=postgres
 Environment=PGPORT=5432
 
 # Location of database directory
-Environment=PGDATA=/var/lib/postgresql/19.12
+Environment=PGDATA=/var/lib/postgresql/@STX_REL@
 
 # Disable OOM kill on the postmaster
 OOMScoreAdjust=-17
