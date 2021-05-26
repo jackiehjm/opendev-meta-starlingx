@@ -10,8 +10,9 @@ SRC_URI += " \
     "
 
 do_install_append() {
-       install -d ${D}${systemd_unitdir}/system
-       install -m 0755 ${WORKDIR}/postgresql.service.update ${D}${systemd_unitdir}/system/postgresql.service
+	install -d ${D}${systemd_unitdir}/system
+	install -m 0755 ${WORKDIR}/postgresql.service.update ${D}${systemd_unitdir}/system/postgresql.service
+	sed -i -e "s/@STX_REL@/${STX_REL}/" ${D}${systemd_unitdir}/system/postgresql.service
 }
 
 FILES_${PN} += "${systemd_unitdir}/system/postgresql.service"
