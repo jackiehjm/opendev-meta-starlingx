@@ -4,10 +4,10 @@ DESCRIPTION = "stx-puppet modules"
 STABLE = "starlingx/master"
 PROTOCOL = "https"
 SRCNAME = "stx-puppet"
-BRANCH = "r/stx.3.0"
-SRCREV = "678fe78b72b70e213eae32b1932afe97cc8c16b4"
+BRANCH = "r/stx.5.0"
+SRCREV = "fddac0bf3cc16be78743961f0b9379a48605707a"
 S = "${WORKDIR}/git"
-PV = "1.0.0"
+PV = "1.0.0+git${SRCPV}"
 
 LICENSE = "Apache-2.0"
 
@@ -25,7 +25,6 @@ LIC_FILES_CHKSUM = " \
 	file://puppet-manifests/src/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
 	"
 
-#	file://${BPN}/use-cast-operator.patch 
 SRC_URI = " \
 	git://opendev.org/starlingx/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
 	file://${BPN}/0001-puppet-manifest-apply-rebase-adjust-path.patch \
@@ -34,13 +33,14 @@ SRC_URI = " \
 	file://${BPN}/0004-puppet-dcorch-updates-for-poky-stx.patch \
 	file://${BPN}/0005-puppet-sysinv-updates-for-poky-stx.patch \
 	file://${BPN}/0006-puppet-manifest-apply-do-not-treat-warnings-as-block.patch \
-	file://${BPN}/0007-puppet-manifests-etcd-override-typo-and-journalctl.patch \
+	file://${BPN}/0007-puppet-manifests-get-boot-device-from-cmdline.patch \
 	file://${BPN}/0008-puppet-manifests-keystone-include-platform-client.patch \
 	file://${BPN}/0009-puppet-manifests-lvm-remove-lvmetad.patch \
 	file://${BPN}/0010-puppet-manifest-apply-workaround-to-ignore-known-err.patch \
 	file://${BPN}/0011-puppet-manifest-kubernetes.pp-add-re-tries-for-docker-login.patch \
-	file://${BPN}/get-boot-device-from-cmdline.patch \
-	file://${BPN}/poky-specific-apply-network-config-script.patch \
+	file://${BPN}/0012-puppet-manifests-poky-specific-apply-network-config-script.patch \
+	file://${BPN}/0013-puppet-manifest-adjust-the-containerd-package-name.patch \
+	\
 	file://${BPN}/apply_network_config_poky.sh \
 	"
 
@@ -52,6 +52,7 @@ RDEPENDS_${PN} += " \
 	multipath-tools \
 	multipath-tools-libs \
 	ntpdate \
+	python-ruamel.yaml \
 	puppet-staging \
 	puppet-oslo \
 	puppetlabs-apache \
@@ -188,6 +189,17 @@ do_install() {
 
 	# fix the libdir for collectd
 	sed -i -e 's|/usr/lib64|${libdir}|' ${D}/${datadir}/puppet/modules/platform/templates/collectd.conf.erb
+
+	sed -i -e 's|/usr/local/bin|${bindir}|' \
+	       -e 's|/usr/local/sbin|${sbindir}|' \
+	       ${D}/${datadir}/puppet/modules/openstack/manifests/keystone.pp \
+	       ${D}/${datadir}/puppet/modules/openstack/templates/lighttpd.conf.erb \
+	       ${D}/${datadir}/puppet/modules/platform/manifests/grub.pp \
+	       ${D}/${datadir}/puppet/modules/platform/manifests/ceph.pp \
+	       ${D}/${datadir}/puppet/modules/platform/manifests/docker.pp \
+	       ${D}/${datadir}/puppet/modules/platform/manifests/kubernetes.pp \
+	       ${D}/${datadir}/puppet/modules/platform/manifests/compute.pp \
+
 
 	install -m 0755 ${WORKDIR}/${PN}/apply_network_config_poky.sh  ${D}/${bindir}/apply_network_config_poky.sh
 }

@@ -1,3 +1,17 @@
+From 5e41d09743780d9bdb96adfa7d15ef7b5480c7fb Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 27 May 2021 15:44:26 +0800
+Subject: [PATCH 07/12] get-boot-device-from-cmdline
+
+Upstream-Status: Inappropriate [poky-stx specific]
+
+Rebased for stx 5.0
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../src/modules/platform/lib/facter/is_primary_disk_rotational.rb       | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 diff --git a/puppet-manifests/src/modules/platform/lib/facter/is_primary_disk_rotational.rb b/puppet-manifests/src/modules/platform/lib/facter/is_primary_disk_rotational.rb
 index d80896f..599fcd8 100644
 --- a/puppet-manifests/src/modules/platform/lib/facter/is_primary_disk_rotational.rb
@@ -10,3 +24,6 @@ index d80896f..599fcd8 100644
    rootfs_device = Facter::Core::Execution.exec("basename #{rootfs_partition} | sed 's/[0-9]*$//;s/p[0-9]*$//'")
    setcode "cat /sys/block/#{rootfs_device}/queue/rotational"
  end
+-- 
+2.7.4
+
