@@ -1,8 +1,22 @@
+From dea274faeadd858924bc1124dec9b574975560ef Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 27 May 2021 15:26:01 +0800
+Subject: [PATCH 04/12] puppet-dcorch-updates-for-poky-stx
+
+Upstream-Status: Inappropriate [poky-stx specific]
+
+Rebased for stx 5.0
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../puppet-dcorch/src/dcorch/manifests/params.pp   | 34 ++++++++++++++++------
+ 1 file changed, 25 insertions(+), 9 deletions(-)
+
 diff --git a/modules/puppet-dcorch/src/dcorch/manifests/params.pp b/modules/puppet-dcorch/src/dcorch/manifests/params.pp
-index 76d5fa1..334cfeb 100644
+index df823dc..c4b727a 100644
 --- a/modules/puppet-dcorch/src/dcorch/manifests/params.pp
 +++ b/modules/puppet-dcorch/src/dcorch/manifests/params.pp
-@@ -14,18 +14,37 @@ class dcorch::params {
+@@ -14,16 +14,32 @@ class dcorch::params {
    $dcorch_paste_api_ini = '/etc/dcorch/api-paste.ini'
  
    if $::osfamily == 'Debian' {
@@ -12,20 +26,15 @@ index 76d5fa1..334cfeb 100644
 -    $api_service           = 'dcorch-api'
 -    $engine_package        = 'distributedcloud-dcorch'
 -    $engine_service        = 'dcorch-engine'
--    $snmp_package          = 'distributedcloud-dcorch'
--    $snmp_service          = 'dcorch-snmp'
 -    $api_proxy_package      = 'distributedcloud-dcorch'
 -    $api_proxy_service      = 'dcorch-api-proxy'
++    if $::operatingsystem == 'poky-stx' {
  
 -    $db_sync_command       = 'dcorch-manage db_sync'
-+    if $::operatingsystem == 'poky-stx' {
-+
 +      $package_name          = 'dcorch'
 +      $client_package        = 'distributedcloud-client-dcorchclient'
 +      $api_package           = false
 +      $api_service           = 'dcorch-api'
-+      $snmp_package          = false
-+      $snmp_service          = 'dcorch-snmp'
 +      $engine_package        = false
 +      $engine_service        = 'dcorch-engine'
 +      $api_proxy_package      = false
@@ -40,8 +49,6 @@ index 76d5fa1..334cfeb 100644
 +      $api_service           = 'dcorch-api'
 +      $engine_package        = 'distributedcloud-dcorch'
 +      $engine_service        = 'dcorch-engine'
-+      $snmp_package          = 'distributedcloud-dcorch'
-+      $snmp_service          = 'dcorch-snmp'
 +      $api_proxy_package      = 'distributedcloud-dcorch'
 +      $api_proxy_service      = 'dcorch-api-proxy'
 +
@@ -51,3 +58,6 @@ index 76d5fa1..334cfeb 100644
  
    } elsif($::osfamily == 'RedHat') {
  
+-- 
+2.7.4
+

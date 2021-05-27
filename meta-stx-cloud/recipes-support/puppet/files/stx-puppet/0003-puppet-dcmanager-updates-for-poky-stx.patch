@@ -1,5 +1,19 @@
+From 6abfdb9bcac3772142efcc7ee399d1224b031622 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 27 May 2021 15:14:55 +0800
+Subject: [PATCH 03/12] puppet-dcmanager-updates-for-poky-stx
+
+Upstream-Status: Inappropriate [poky-stx specific]
+
+Rebased for stx 5.0
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../src/dcmanager/manifests/params.pp              | 29 ++++++++++++++++------
+ 1 file changed, 22 insertions(+), 7 deletions(-)
+
 diff --git a/modules/puppet-dcmanager/src/dcmanager/manifests/params.pp b/modules/puppet-dcmanager/src/dcmanager/manifests/params.pp
-index 5cbfb50..0a4d91b 100644
+index 5cbfb50..b932048 100644
 --- a/modules/puppet-dcmanager/src/dcmanager/manifests/params.pp
 +++ b/modules/puppet-dcmanager/src/dcmanager/manifests/params.pp
 @@ -13,13 +13,28 @@ class dcmanager::params {
@@ -38,3 +52,6 @@ index 5cbfb50..0a4d91b 100644
  
    } elsif($::osfamily == 'RedHat') {
  
+-- 
+2.7.4
+
