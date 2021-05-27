@@ -1,0 +1,38 @@
+From 508a36111877c72d6c6e13f94dbbce1b7627774f Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 27 May 2021 15:46:55 +0800
+Subject: [PATCH 12/12] poky-specific-apply-network-config-script
+
+Upstream-Status: Inappropriate [poky-stx specific]
+
+Rebased for stx 5.0
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ puppet-manifests/src/modules/platform/manifests/network.pp | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/puppet-manifests/src/modules/platform/manifests/network.pp b/puppet-manifests/src/modules/platform/manifests/network.pp
+index fea1abc..f94c2f2 100644
+--- a/puppet-manifests/src/modules/platform/manifests/network.pp
++++ b/puppet-manifests/src/modules/platform/manifests/network.pp
+@@ -315,8 +315,14 @@ class platform::network::apply {
+   -> Network_route6 <| |>
+   -> Exec['apply-network-config']
+ 
+-  exec {'apply-network-config':
+-    command => 'apply_network_config.sh',
++  if($::operatingsystem == 'poky-stx') {
++    exec {'apply-network-config':
++      command => 'apply_network_config_poky.sh',
++    }
++  } else {
++    exec {'apply-network-config':
++      command => 'apply_network_config.sh',
++    }
+   }
+   # Wait for network interface to leave tentative state during ipv6 DAD
+   exec {'wait-for-tentative':
+-- 
+2.7.4
+
