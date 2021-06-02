@@ -1,13 +1,27 @@
+# For the stx files and patches repo
+SRCREV_stx = "821de96615cb6f93fbc39f4baaa769029328d34d"
+STXBRANCH = "r/stx.5.0"
+STXSUBPATH = "config/puppet-modules/openstack/${BP}/centos"
+STXDSTSUFX = "stx-files"
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+inherit stx-patch
+
+FILESEXTRAPATHS_prepend := "${WORKDIR}/${STXDSTSUFX}:"
+
 SRC_URI += " \
-	file://${PN}/0001-pike-rebase-squash-titanium-patches.patch \
-	file://${PN}/0002-remove-the-Keystone-admin-app.patch \
-	file://${PN}/0003-remove-eventlet_bindhost-from-Keystoneconf.patch \
-	file://${PN}/0004-escape-special-characters-in-bootstrap.patch \
-	file://${PN}/0005-Add-support-for-fernet-receipts.patch \
-	file://${PN}/0007-puppet-keystone-specify-full-path-to-openrc.patch \
-	file://${PN}/0008-params.pp-fix-the-service-name-of-openstack-keystone.patch \
+	git://opendev.org/starlingx/integ.git;protocol=${PROTOCOL};branch=${STXBRANCH};destsuffix=${STXDSTSUFX};subpath=${STXSUBPATH};name=stx \
+	file://${BPN}/puppet-keystone-specify-full-path-to-openrc.patch \
+	file://${BPN}/puppet-keystone-params.pp-fix-the-service-name.patch \
+	"
+
+SRC_URI_STX += " \
+	file://patches/0001-pike-rebase-squash-titanium-patches.patch \
+	file://patches/0002-remove-the-Keystone-admin-app.patch \
+	file://patches/0003-remove-eventlet_bindhost-from-Keystoneconf.patch \
+	file://patches/0004-escape-special-characters-in-bootstrap.patch \
+	file://patches/0005-Add-support-for-fernet-receipts.patch \
+	file://patches/0006-update-Barbican-admin-secret-s-user-project-IDs-duri.patch \
+	file://patches/0007-update-for-openstackclient-Train-upgrade.patch \
 	"
 
 do_install_append () {
