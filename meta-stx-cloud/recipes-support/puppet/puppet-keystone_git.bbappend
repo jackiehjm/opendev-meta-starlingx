@@ -1,13 +1,18 @@
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+
+# The patches in stx-integ sub-dir is from https://opendev.org/starlingx/integ.git
 SRC_URI += " \
-	file://${PN}/0001-pike-rebase-squash-titanium-patches.patch \
-	file://${PN}/0002-remove-the-Keystone-admin-app.patch \
-	file://${PN}/0003-remove-eventlet_bindhost-from-Keystoneconf.patch \
-	file://${PN}/0004-escape-special-characters-in-bootstrap.patch \
-	file://${PN}/0005-Add-support-for-fernet-receipts.patch \
-	file://${PN}/0007-puppet-keystone-specify-full-path-to-openrc.patch \
-	file://${PN}/0008-params.pp-fix-the-service-name-of-openstack-keystone.patch \
+	file://${PN}/stx-integ/0001-pike-rebase-squash-titanium-patches.patch \
+	file://${PN}/stx-integ/0002-remove-the-Keystone-admin-app.patch \
+	file://${PN}/stx-integ/0003-remove-eventlet_bindhost-from-Keystoneconf.patch \
+	file://${PN}/stx-integ/0004-escape-special-characters-in-bootstrap.patch \
+	file://${PN}/stx-integ/0005-Add-support-for-fernet-receipts.patch \
+	file://${PN}/stx-integ/0006-update-Barbican-admin-secret-s-user-project-IDs-duri.patch \
+	file://${PN}/stx-integ/0007-update-for-openstackclient-Train-upgrade.patch \
+	\
+	file://${PN}/puppet-keystone-specify-full-path-to-openrc.patch \
+	file://${PN}/puppet-keystone-params.pp-fix-the-service-name.patch \
 	"
 
 do_install_append () {
