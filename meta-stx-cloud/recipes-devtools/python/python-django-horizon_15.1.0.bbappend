@@ -1,6 +1,7 @@
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 SRC_URI += " \
+	file://${BPN}/0001-Remove-the-hard-coded-internal-URL-for-keystone.patch \
 	file://${BPN}/guni_config.py \
 	file://${BPN}/horizon-assets-compress \
 	file://${BPN}/horizon-clearsessions \
@@ -88,7 +89,6 @@ do_install_append () {
 	mv ${D}${datadir}/openstack-dashboard/openstack_dashboard/local/local_settings.py.example ${D}${sysconfdir}/openstack-dashboard/local_settings
 
 	mv ${D}${datadir}/openstack-dashboard/openstack_dashboard/conf/*.json ${D}${sysconfdir}/openstack-dashboard
-	cp -a  ${S}/openstack_dashboard/conf/cinder_policy.d ${D}${sysconfdir}/openstack-dashboard
 	cp -a  ${S}/openstack_dashboard/conf/nova_policy.d ${D}${sysconfdir}/openstack-dashboard
 
 	# copy static files to ${datadir}/openstack-dashboard/static
