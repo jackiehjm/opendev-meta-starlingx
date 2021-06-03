@@ -5,16 +5,16 @@ SECTION = "devel/python"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=1dece7821bf3fd70fe1309eaa37d52a2"
 
-SRCREV = "c78581b4608f3dc10e945d358963000f284f188a"
+SRCREV = "dc9e9e32dfbf9fd9c58f9f8e2b35f0bcfd62328e"
 SRCNAME = "keystone"
-PROTOCOL = "git"
-BRANCH = "stable/stein"
+PROTOCOL = "https"
+BRANCH = "stable/train"
 S = "${WORKDIR}/git"
-PV = "15.0.0+git${SRCPV}"
+PV = "16.0.0+git${SRCPV}"
 
 
 SRC_URI = " \
-	git://opendev.org/openstack/${SRCNAME}.git;protocol=${PROTOCOL};branch=${BRANCH} \
+	git://github.com/openstack/${SRCNAME}.git;protocol=${PROTOCOL};branch=${BRANCH} \
 	file://${PN}/keystone.conf \
 	file://${PN}/identity.sh \
 	file://${PN}/convert_keystone_backend.py \
