@@ -5,31 +5,38 @@ SECTION = "devel/python"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=1dece7821bf3fd70fe1309eaa37d52a2"
 
-SRCREV = "c78581b4608f3dc10e945d358963000f284f188a"
+# For the main package source code repo
+SRCREV = "dc9e9e32dfbf9fd9c58f9f8e2b35f0bcfd62328e"
 SRCNAME = "keystone"
-PROTOCOL = "git"
-BRANCH = "stable/stein"
+PROTOCOL = "https"
+BRANCH = "stable/train"
 S = "${WORKDIR}/git"
-PV = "15.0.0+git${SRCPV}"
+PV = "16.0.0+git${SRCPV}"
 
+# For the stx files and patches repo
+SRCREV_FORMAT = "stx"
+SRCREV_stx = "1eff6b5ab36a814debb6ed563a3999548a2643e6"
+STXBRANCH = "r/stx.5.0"
+STXSUBPATH = "openstack/python-keystone/centos"
+STXDSTSUFX = "stx-files"
 
 SRC_URI = " \
-	git://opendev.org/openstack/${SRCNAME}.git;protocol=${PROTOCOL};branch=${BRANCH} \
-	file://${PN}/keystone.conf \
-	file://${PN}/identity.sh \
-	file://${PN}/convert_keystone_backend.py \
-	file://${PN}/wsgi-keystone.conf \
-	file://${PN}/admin-openrc \
-	file://${PN}/keystone-init.service \
-	file://${PN}/stx-files/openstack-keystone.service \
-	file://${PN}/stx-files/keystone-all \
-	file://${PN}/stx-files/keystone-fernet-keys-rotate-active \
-	file://${PN}/stx-files/public.py \
-	file://${PN}/stx-files/password-rules.conf \
+	git://github.com/openstack/${SRCNAME}.git;protocol=${PROTOCOL};branch=${BRANCH} \
+	git://opendev.org/starlingx/upstream.git;protocol=${PROTOCOL};branch=${STXBRANCH};destsuffix=${STXDSTSUFX};subpath=${STXSUBPATH};name=stx \
+	file://${BPN}/keystone.conf \
+	file://${BPN}/identity.sh \
+	file://${BPN}/convert_keystone_backend.py \
+	file://${BPN}/wsgi-keystone.conf \
+	file://${BPN}/admin-openrc \
+	file://${BPN}/keystone-init.service \
 	"
-
-
 inherit setuptools identity hosts default_configs monitor useradd systemd
+
+inherit stx-patch
+FILESEXTRAPATHS_prepend := "${WORKDIR}/${STXDSTSUFX}:"
+SRC_URI_STX = " \
+	file://patches/0001-Rebasing-Keyring-integration.patch \
+	"
 
 SERVICE_TOKEN = "password"
 TOKEN_FORMAT ?= "PKI"
@@ -83,14 +90,14 @@ do_install_append() {
 
     # Setup the systemd service file
     install -d ${D}${systemd_system_unitdir}/
-    install -m 644 ${WORKDIR}/${PN}/keystone-init.service ${D}${systemd_system_unitdir}/keystone-init.service
+    install -m 644 ${WORKDIR}/${BPN}/keystone-init.service ${D}${systemd_system_unitdir}/keystone-init.service
 
     mv  ${D}/${datadir}/etc/keystone/sso_callback_template.html ${KEYSTONE_CONF_DIR}/
     rm -rf ${D}/${datadir}
 
     # Setup the admin-openrc file
     KS_OPENRC_FILE=${KEYSTONE_CONF_DIR}/admin-openrc
-    install -m 600 ${WORKDIR}/${PN}/admin-openrc ${KS_OPENRC_FILE}
+    install -m 600 ${WORKDIR}/${BPN}/admin-openrc ${KS_OPENRC_FILE}
     sed -e "s:%CONTROLLER_IP%:${CONTROLLER_IP}:g" -i ${KS_OPENRC_FILE}
     sed -e "s:%ADMIN_USER%:${ADMIN_USER}:g" -i ${KS_OPENRC_FILE}
     sed -e "s:%ADMIN_PASSWORD%:${ADMIN_PASSWORD}:g" -i ${KS_OPENRC_FILE}
@@ -99,9 +106,9 @@ do_install_append() {
     # permissions as packages such as Apache require read access.
     #
     # Apache needs to read the keystone.conf
-    install -m 644 ${WORKDIR}/${PN}/keystone.conf ${KEYSTONE_CONF_DIR}/
+    install -m 644 ${WORKDIR}/${BPN}/keystone.conf ${KEYSTONE_CONF_DIR}/
     # Apache needs to read the wsgi-keystone.conf
-    install -m 644 ${WORKDIR}/${PN}/wsgi-keystone.conf ${APACHE_CONF_DIR}/keystone.conf
+    install -m 644 ${WORKDIR}/${BPN}/wsgi-keystone.conf ${APACHE_CONF_DIR}/keystone.conf
     install -m 600 ${S}${sysconfdir}/logging.conf.sample  ${KEYSTONE_CONF_DIR}/logging.conf
 
     # Copy examples from upstream
@@ -170,17 +177,17 @@ role_name_attribute = ou \
 role_tree_dn = ou=Roles,${LDAP_DN} \
 ' ${KEYSTONE_CONF_FILE}
 
-        install -m 0755 ${WORKDIR}/${PN}/convert_keystone_backend.py \
+        install -m 0755 ${WORKDIR}/${BPN}/convert_keystone_backend.py \
             ${D}${sysconfdir}/keystone/convert_keystone_backend.py
     fi
 
     
-    install -m 755 ${WORKDIR}/${PN}/stx-files/keystone-fernet-keys-rotate-active ${D}/${bindir}/keystone-fernet-keys-rotate-active
-    install -m 440 ${WORKDIR}/${PN}/stx-files/password-rules.conf ${KEYSTONE_CONF_DIR}/password-rules.conf
+    install -m 755 ${WORKDIR}/${STXDSTSUFX}/files/keystone-fernet-keys-rotate-active ${D}/${bindir}/keystone-fernet-keys-rotate-active
+    install -m 440 ${WORKDIR}/${STXDSTSUFX}/files/password-rules.conf ${KEYSTONE_CONF_DIR}/password-rules.conf
     install -m 755 -d ${KEYSTONE_DATA_DIR}
-    install -m 755 ${WORKDIR}/${PN}/stx-files/public.py ${KEYSTONE_DATA_DIR}/public.py
-    install -m 644 ${WORKDIR}/${PN}/stx-files/openstack-keystone.service ${D}${systemd_system_unitdir}/openstack-keystone.service
-    install -m 755 ${WORKDIR}/${PN}/stx-files/keystone-all ${D}${bindir}/keystone-all
+    install -m 755 ${WORKDIR}/${STXDSTSUFX}/files/public.py ${KEYSTONE_DATA_DIR}/public.py
+    install -m 644 ${WORKDIR}/${STXDSTSUFX}/files/openstack-keystone.service ${D}${systemd_system_unitdir}/openstack-keystone.service
+    install -m 755 ${WORKDIR}/${STXDSTSUFX}/files/keystone-all ${D}${bindir}/keystone-all
     
 }
 
