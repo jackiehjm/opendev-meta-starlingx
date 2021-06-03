@@ -1,7 +1,7 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 SRCREV_FORMAT = "opendev"
-SRCREV_opendev = "d778e862571957ece3c404c0c37d325769772fde"
+SRCREV_opendev = "237737bbd2488bcae6822dfadc4977d86ea642d7"
 SUBPATH0 = "lighttpd-config"
 DSTSUFX0 = "stx-configfiles"
 
@@ -10,7 +10,7 @@ LIC_FILES_CHKSUM += "\
 	file://stx-configfiles-LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
 	"
 SRC_URI += " \
-	git://opendev.org/starlingx/config-files.git;protocol=https;destsuffix=${DSTSUFX0};branch="r/stx.3.0";subpath=${SUBPATH0};name=opendev \
+	git://opendev.org/starlingx/config-files.git;protocol=https;destsuffix=${DSTSUFX0};branch="r/stx.5.0";subpath=${SUBPATH0};name=opendev \
 	file://lighttpd-init-script-chroot.patch;striplevel=3 \
 	"
 
