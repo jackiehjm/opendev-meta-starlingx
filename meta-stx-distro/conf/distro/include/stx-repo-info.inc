@@ -1,0 +1,4 @@
+STX_BRANCH ?= "r/stx.5.0"
+
+STX_SRCREV_upstream = "1eff6b5ab36a814debb6ed563a3999548a2643e6"
+STX_SRCREV_integ = "821de96615cb6f93fbc39f4baaa769029328d34d"
