@@ -1,8 +1,15 @@
+# For the stx files and patches repo
+SRCREV_stx = "821de96615cb6f93fbc39f4baaa769029328d34d"
+STXBRANCH = "r/stx.5.0"
+STXSUBPATH = "config/puppet-modules/puppet-postgresql-${PV}/centos/files"
+STXDSTSUFX = "stx-files"
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+inherit stx-patch
+
+FILESEXTRAPATHS_prepend := "${WORKDIR}/${STXDSTSUFX}:"
+
 SRC_URI += " \
-	file://${BPN}/0001-Roll-up-TIS-patches.patch \
-	file://${BPN}/0002-remove-puppetlabs-apt-as-a-requirement.patch \
+	git://opendev.org/starlingx/integ.git;protocol=${PROTOCOL};branch=${STXBRANCH};destsuffix=${STXDSTSUFX};subpath=${STXSUBPATH};name=stx \
 	file://${BPN}/0003-puppetlabs-postgresql-account-for-naming-diffs.patch \
 	file://${BPN}/0004-poky-postgresql-updates.patch \
 	file://${BPN}/0005-puppetlabs-postgresql-poky.patch \
@@ -10,7 +17,10 @@ SRC_URI += " \
 	file://${BPN}/postgresql.service \
 	"
 
-#	file://${PN}/0004-postgresql-service-restart-with-systemctl.patch 
+SRC_URI_STX += " \
+	file://0001-Roll-up-TIS-patches.patch \
+	file://0002-remove-puppetlabs-apt-as-a-requirement.patch \
+	"
 
 RDEPENDS_${PN}_append = " \
 	postgresql \
