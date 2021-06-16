@@ -190,7 +190,8 @@ RDEPENDS_packagegroup-stx-integ = " \
 	mariadb \
 	drbd-utils \
 	docker-distribution \
-        docker-forward-journald \
+	docker-forward-journald \
+	armada \
 	etcd \
 	kexec-tools \
 	kubernetes \
