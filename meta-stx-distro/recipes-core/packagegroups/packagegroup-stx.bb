@@ -44,6 +44,7 @@ RDEPENDS_packagegroup-stx-puppet = "\
 	"
 
 RDEPENDS_packagegroup-stx-config = " \
+	cert-mon \
 	config-gate-worker \
 	config-gate \
 	controllerconfig \
