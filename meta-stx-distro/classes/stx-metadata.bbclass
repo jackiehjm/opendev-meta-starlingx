@@ -28,7 +28,7 @@ SRC_URI_STX ?= ""
 STX_METADATA_PATH = "${TMPDIR}/work-shared/stx-${STX_REPO}-source/git/${STX_SUBPATH}"
 FILESEXTRAPATHS_prepend = "${STX_METADATA_PATH}:"
 
-do_patch[depends] += "stx-${STX_REPO}-source:do_patch"
+do_unpack[depends] += "stx-${STX_REPO}-source:do_patch"
 
 do_patch_prepend() {
     bb.build.exec_func('add_stx_patch', d)
