@@ -235,4 +235,5 @@ RDEPENDS_packagegroup-stx-armada-app = "\
 	stx-openstack-helm \
 	stx-platform-helm \
 	stx-cert-manager-helm \
+	stx-nginx-ingress-controller-helm \
 	"
