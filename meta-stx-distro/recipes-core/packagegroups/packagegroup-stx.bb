@@ -77,9 +77,6 @@ RDEPENDS_packagegroup-stx-config-files  = " \
 	procps \
 	iscsi-initiator-utils \
 	memcached \
-	net-snmp \
-	net-snmp-server-snmpd \
-	net-snmp-server-snmptrapd \
 	libpam-runtime \
 	rabbitmq-server \
 	rsync \
