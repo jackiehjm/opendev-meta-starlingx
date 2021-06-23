@@ -193,6 +193,7 @@ RDEPENDS_packagegroup-stx-integ = " \
 	docker-forward-journald \
 	armada \
 	etcd \
+	kexec-tools \
 	kubernetes \
 	ldapscripts \
 	python-3parclient \
