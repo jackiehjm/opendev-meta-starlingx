@@ -1,22 +1,15 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/${BP}:${THISDIR}/files:"
+FILESEXTRAPATHS_prepend := "${THISDIR}/${BP}:"
 
 inherit python3native python3-dir
+inherit stx-metadata
+
+STX_REPO = "integ"
+STX_SUBPATH = "ceph/ceph/files"
 
 DISTRO_FEATURES_BACKFILL_CONSIDERED_remove = "sysvinit"
 
 SRC_URI += "\
 	file://0001-ceph-rebase-on-stx.3.0-and-warrior.patch \
-	file://ceph.conf \
-	file://ceph-init-wrapper.sh \
-        file://ceph-preshutdown.sh \
-        file://ceph.service \
-        file://mgr-restful-plugin.py \
-        file://starlingx-docker-override.conf \
-        file://ceph.conf.pmon \
-        file://ceph-manage-journal.py \
-        file://ceph-radosgw.service \
-        file://ceph.sh \
-        file://mgr-restful-plugin.service \
 	file://rados.runtime.decode.error.patch \
 	"
 DEPENDS = "boost rdma-core bzip2 curl expat gperf-native \
@@ -55,31 +48,31 @@ EXTRA_OECMAKE = "-DWITH_MANPAGE=OFF \
 
 do_install_append () {
     install -d ${D}${sysconfdir}/ceph
-    install -m 0644 ${WORKDIR}/ceph.conf ${D}${sysconfdir}/ceph/
-    install -m 0644 ${WORKDIR}/ceph-radosgw.service ${D}${systemd_system_unitdir}/ceph-radosgw@.service
-    install -m 0644 ${WORKDIR}/ceph.service ${D}${systemd_system_unitdir}
-    install -m 0644 ${WORKDIR}/mgr-restful-plugin.service ${D}${systemd_system_unitdir}
+    install -m 0644 ${STX_METADATA_PATH}/ceph.conf ${D}${sysconfdir}/ceph/
+    install -m 0644 ${STX_METADATA_PATH}/ceph-radosgw.service ${D}${systemd_system_unitdir}/ceph-radosgw@.service
+    install -m 0644 ${STX_METADATA_PATH}/ceph.service ${D}${systemd_system_unitdir}
+    install -m 0644 ${STX_METADATA_PATH}/mgr-restful-plugin.service ${D}${systemd_system_unitdir}
 
-    install -m 0700 ${WORKDIR}/ceph-manage-journal.py ${D}${sbindir}/ceph-manage-journal
-    install -Dm 0750 ${WORKDIR}/mgr-restful-plugin.py  ${D}${sysconfdir}/rc.d/init.d/mgr-restful-plugin
-    install -Dm 0750 ${WORKDIR}/mgr-restful-plugin.py  ${D}${sysconfdir}/init.d/mgr-restful-plugin
-    install -m 0750 ${WORKDIR}/ceph.conf.pmon ${D}${sysconfdir}/ceph/
+    install -m 0700 ${STX_METADATA_PATH}/ceph-manage-journal.py ${D}${sbindir}/ceph-manage-journal
+    install -Dm 0750 ${STX_METADATA_PATH}/mgr-restful-plugin.py  ${D}${sysconfdir}/rc.d/init.d/mgr-restful-plugin
+    install -Dm 0750 ${STX_METADATA_PATH}/mgr-restful-plugin.py  ${D}${sysconfdir}/init.d/mgr-restful-plugin
+    install -m 0750 ${STX_METADATA_PATH}/ceph.conf.pmon ${D}${sysconfdir}/ceph/
 
     install -d -m 0750 ${D}${sysconfdir}/services.d/controller
     install -d -m 0750 ${D}${sysconfdir}/services.d/storage
     install -d -m 0750 ${D}${sysconfdir}/services.d/worker
 
-    install -m 0750 ${WORKDIR}/ceph.sh ${D}${sysconfdir}/services.d/controller
-    install -m 0750 ${WORKDIR}/ceph.sh ${D}${sysconfdir}/services.d/storage
-    install -m 0750 ${WORKDIR}/ceph.sh ${D}${sysconfdir}/services.d/worker
+    install -m 0750 ${STX_METADATA_PATH}/ceph.sh ${D}${sysconfdir}/services.d/controller
+    install -m 0750 ${STX_METADATA_PATH}/ceph.sh ${D}${sysconfdir}/services.d/storage
+    install -m 0750 ${STX_METADATA_PATH}/ceph.sh ${D}${sysconfdir}/services.d/worker
 
-    install -Dm 0750 ${WORKDIR}/ceph-init-wrapper.sh ${D}${sysconfdir}/rc.d/init.d/ceph-init-wrapper
-    install -Dm 0750 ${WORKDIR}/ceph-init-wrapper.sh ${D}${sysconfdir}/init.d/ceph-init-wrapper
+    install -Dm 0750 ${STX_METADATA_PATH}/ceph-init-wrapper.sh ${D}${sysconfdir}/rc.d/init.d/ceph-init-wrapper
+    install -Dm 0750 ${STX_METADATA_PATH}/ceph-init-wrapper.sh ${D}${sysconfdir}/init.d/ceph-init-wrapper
     sed -i -e 's|/usr/lib64|${libdir}|' ${D}${sysconfdir}/rc.d/init.d/ceph-init-wrapper ${D}${sysconfdir}/init.d/ceph-init-wrapper
 
-    install -m 0700 ${WORKDIR}/ceph-preshutdown.sh ${D}${sbindir}/ceph-preshutdown.sh
+    install -m 0700 ${STX_METADATA_PATH}/ceph-preshutdown.sh ${D}${sbindir}/ceph-preshutdown.sh
     
-    install -Dm 0644 ${WORKDIR}/starlingx-docker-override.conf ${D}${systemd_system_unitdir}/docker.service.d/starlingx-docker-override.conf
+    install -Dm 0644 ${STX_METADATA_PATH}/starlingx-docker-override.conf ${D}${systemd_system_unitdir}/docker.service.d/starlingx-docker-override.conf
 
     install -m 0644 -D ${S}/src/etc-rbdmap ${D}${sysconfdir}/ceph/rbdmap 
     install -m 0644 -D ${S}/etc/sysconfig/ceph ${D}${sysconfdir}/sysconfig/ceph
