@@ -9,19 +9,11 @@ DEPENDS += " \
     monitor-helm-elastic \
 "
 
-PROTOCOL = "https"
-BRANCH = "r/stx.3.0"
-SRCNAME = "monitor-armada-app"
-SRCREV = "e5ee6b3a07b74479b93fe90eff0662cf81890f73"
-SRCREV_opendev = "e5ee6b3a07b74479b93fe90eff0662cf81890f73"
-DESTSUFFIX = "${PN}-${PV}"
-SUBPATH0 = "stx-monitor-helm/stx-monitor-helm"
-
-SRC_URI = " \
-	git://opendev.org/starlingx/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH};destsuffix=${DESTSUFFIX};subpath=${SUBPATH0};name=opendev \
-	"
-
 inherit allarch
+inherit stx-metadata
+
+STX_REPO = "monitor-armada-app"
+STX_SUBPATH = "${BPN}/${BPN}"
 
 helm_folder = "${nonarch_libdir}/helm"
 armada_folder = "${nonarch_libdir}/armada"
@@ -32,9 +24,9 @@ do_compile[noexec] = "1"
 
 do_install () {
 	install -d -m 755 ${D}${armada_folder}
-	install -p -D -m 755 ${S}/manifests/*.yaml ${D}${armada_folder}
+	install -p -D -m 755 ${STX_METADATA_PATH}/manifests/*.yaml ${D}${armada_folder}
 	install -d -m 755 ${D}${app_folder}
-	install -p -D -m 755 ${S}/files/metadata.yaml ${D}${app_folder}/monitor_metadata.yaml
+	install -p -D -m 755 ${STX_METADATA_PATH}/files/metadata.yaml ${D}${app_folder}/monitor_metadata.yaml
 }
 
 FILES_${PN} = " \
