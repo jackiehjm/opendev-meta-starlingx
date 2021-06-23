@@ -1,46 +1,71 @@
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-PV = "1.16.2+git${SRCREV_kubernetes}"
-SRCREV_kubernetes = "c97fe5036ef3df2967d086711e6c0c405941e14b"
+K8S_BASE_VER = "1.18"
+K8S_VER = "${K8S_BASE_VER}.1"
+
+PV = "${K8S_VER}+git${SRCREV_kubernetes}"
+SRCREV_kubernetes = "7879fc12a63337efff607952a323df90cdc7a335"
+
+SRC_SUBDIR = "src/${GO_IMPORT}"
 
 LICENSE += "(Apache-2.0&MIT)&(Apache-2.0|CC-BY-4.0)"
 LIC_FILES_CHKSUM_append = " \
-	file://src/import/logo/LICENSE;md5=b431638b9986506145774a9da0d0ad85 \
-	file://src/import/vendor/github.com/morikuni/aec/LICENSE;md5=86852eb2df591157c788f3ba889c8aec \
-	file://src/import/staging/src/k8s.io/sample-controller/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
-	file://src/import/test/images/kitten/Dockerfile;beginline=1;endline=13;md5=78cb21f802c15df77b75bd56f9417ccf \
-	file://src/import/test/images/nautilus/Dockerfile;beginline=1;endline=13;md5=78cb21f802c15df77b75bd56f9417ccf \
-	file://src/import/staging/src/k8s.io/kubectl/LICENSE;md5=e3fc50a88d0a364313df4b21ef20c29e \
-	file://src/import/vendor/github.com/grpc-ecosystem/go-grpc-middleware/LICENSE;md5=7ab5c73bb7e4679b16dd7c11b3559acf \
+	file://${SRC_SUBDIR}/logo/LICENSE;md5=b431638b9986506145774a9da0d0ad85 \
+	file://${SRC_SUBDIR}/vendor/github.com/morikuni/aec/LICENSE;md5=86852eb2df591157c788f3ba889c8aec \
+	file://${SRC_SUBDIR}/staging/src/k8s.io/sample-controller/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://${SRC_SUBDIR}/test/images/kitten/Dockerfile;beginline=1;endline=13;md5=78cb21f802c15df77b75bd56f9417ccf \
+	file://${SRC_SUBDIR}/test/images/nautilus/Dockerfile;beginline=1;endline=13;md5=78cb21f802c15df77b75bd56f9417ccf \
+	file://${SRC_SUBDIR}/staging/src/k8s.io/kubectl/LICENSE;md5=e3fc50a88d0a364313df4b21ef20c29e \
+	file://${SRC_SUBDIR}/vendor/github.com/grpc-ecosystem/go-grpc-middleware/LICENSE;md5=7ab5c73bb7e4679b16dd7c11b3559acf \
+	"
+inherit stx-metadata
+
+STX_REPO = "integ"
+STX_SUBPATH = "kubernetes/kubernetes/centos/files"
+
+SRC_URI_STX = "\
+	file://0001-Fix-pagesize-check-to-allow-for-options-already-endi.patch;patchdir=${SRC_SUBDIR} \
+	file://fix_http2_erringroundtripper_handling.patch;patchdir=${SRC_SUBDIR} \
+	file://kubelet-cpumanager-disable-CFS-quota-throttling-for-.patch;patchdir=${SRC_SUBDIR} \
+	file://kubelet-cpumanager-keep-normal-containers-off-reserv.patch;patchdir=${SRC_SUBDIR} \
+	file://kubelet-cpumanager-infrastructure-pods-use-system-re.patch;patchdir=${SRC_SUBDIR} \
+	file://kubelet-cpumanager-introduce-concept-of-isolated-CPU.patch;patchdir=${SRC_SUBDIR} \
+	file://Fix-exclusive-CPU-allocations-being-deleted-at-conta.patch;patchdir=${SRC_SUBDIR} \
+	file://kubeadm-create-platform-pods-with-zero-CPU-resources.patch;patchdir=${SRC_SUBDIR} \
+	file://add-option-to-disable-isolcpu-awareness.patch;patchdir=${SRC_SUBDIR} \
+	\
+	file://kubelet-service-remove-docker-dependency.patch;patchdir=${CONTRIB_DIR};striplevel=2 \
 	"
 
-SRC_URI = "git://github.com/kubernetes/kubernetes.git;branch=release-1.16;name=kubernetes \
+CONTRIB_URI = "https://github.com/kubernetes-retired/contrib/tarball/89f6948e24578fed2a90a87871b2263729f90ac3"
+CONTRIB_DIR = "${WORKDIR}/kubernetes-retired-contrib-89f6948"
+
+SRC_URI = "\
+	git://github.com/kubernetes/kubernetes.git;branch=release-${K8S_BASE_VER};name=kubernetes \
+	${CONTRIB_URI};downloadfilename=kubernetes-contrib-v${K8S_VER}.tar.gz;name=contrib \
 	file://0001-hack-lib-golang.sh-use-CC-from-environment.patch \
 	file://0001-cross-don-t-build-tests-by-default.patch \
-	file://kubernetes-accounting.conf \
-	file://kubeadm.conf \
-	file://kubelet-cgroup-setup.sh \
-	file://contrib/* \
 	"
+
+SRC_URI[contrib.md5sum] = "fc05d9dc693dd71e3afb98fa51419879"
+SRC_URI[contrib.sha256sum] = "0e1c6f70fc167d4ff1f268bbb72a8a91fab9bdeb17cec95bd3bb7fe4f56ebdcb"
 
 INSANE_SKIP_${PN} += "textrel"
 INSANE_SKIP_${PN}-misc += "textrel"
 INSANE_SKIP_kubelet += "textrel"
-
 
 do_install () {
 	install -d ${D}${bindir}
 	install -d ${D}${systemd_system_unitdir}/
 
 	# Install binaries
-	install -m 755 -D ${S}/src/import/_output/local/bin/${TARGET_GOOS}/${TARGET_GOARCH}/* ${D}/${bindir}
+	install -m 754 -D ${S}/${SRC_SUBDIR}/_output/local/bin/${TARGET_GOOS}/${TARGET_GOARCH}/* ${D}/${bindir}
 
 	# kubeadm:
 	install -d -m 0755 ${D}/${sysconfdir}/systemd/system/kubelet.service.d
-	install -m 0644 ${WORKDIR}/kubeadm.conf ${D}/${sysconfdir}/systemd/system/kubelet.service.d
+	install -m 0644 ${STX_METADATA_PATH}/kubeadm.conf ${D}/${sysconfdir}/systemd/system/kubelet.service.d
 
 	# kubelete-cgroup-setup.sh
-	install -m 0700 ${WORKDIR}/kubelet-cgroup-setup.sh ${D}/${bindir}
+	install -m 0700 ${STX_METADATA_PATH}/kubelet-cgroup-setup.sh ${D}/${bindir}
 
 	# install the bash completion
 	install -d -m 0755 ${D}${datadir}/bash-completion/completions/
@@ -48,22 +73,34 @@ do_install () {
 
 	# install config files
 	install -d -m 0755 ${D}${sysconfdir}/${BPN}
-	install -m 644 -t ${D}${sysconfdir}/${BPN} ${WORKDIR}/contrib/init/systemd/environ/*
+	install -m 644 -t ${D}${sysconfdir}/${BPN} ${CONTRIB_DIR}/init/systemd/environ/*
 
 	# install service files
 	install -d -m 0755 ${D}${systemd_system_unitdir}
-	install -m 0644 -t ${D}${systemd_system_unitdir} ${WORKDIR}/contrib/init/systemd/*.service
+	install -m 0644 -t ${D}${systemd_system_unitdir} ${CONTRIB_DIR}/init/systemd/*.service
 
 	# install the place the kubelet defaults to put volumes
 	install -d ${D}${localstatedir}/lib/kubelet
 
 	# install systemd tmpfiles
 	install -d -m 0755 ${D}${sysconfdir}/tmpfiles.d
-	install -p -m 0644 -t ${D}${sysconfdir}/tmpfiles.d ${WORKDIR}/contrib/init/systemd/tmpfiles.d/kubernetes.conf
+	install -p -m 0644 -t ${D}${sysconfdir}/tmpfiles.d ${CONTRIB_DIR}/init/systemd/tmpfiles.d/kubernetes.conf
 
 	# enable CPU and Memory accounting
 	install -d -m 0755 ${D}/${sysconfdir}/systemd/system.conf.d
-	install -m 0644 ${WORKDIR}/kubernetes-accounting.conf ${D}/${sysconfdir}//systemd/system.conf.d/
+	install -m 0644 ${STX_METADATA_PATH}/kubernetes-accounting.conf ${D}/${sysconfdir}//systemd/system.conf.d/
+
+	# install specific cluster addons for optional use
+	install -d -m 0755 ${D}${sysconfdir}/${BPN}/addons
+
+	# Addon: volumesnapshots
+	install -d -m 0755 ${D}${sysconfdir}/${BPN}/addons/volumesnapshots
+	install -d -m 0755 ${D}${sysconfdir}/${BPN}/addons/volumesnapshots/crd
+	install -m 0644 -t ${D}${sysconfdir}/${BPN}/addons/volumesnapshots/crd \
+		${S}/${SRC_SUBDIR}/cluster/addons/volumesnapshots/crd/*
+	install -d -m 0755 ${D}${sysconfdir}/${BPN}/addons/volumesnapshots/volume-snapshot-controller
+	install -m 0644 -t ${D}${sysconfdir}/${BPN}/addons/volumesnapshots/volume-snapshot-controller \
+		${S}/${SRC_SUBDIR}/cluster/addons/volumesnapshots/volume-snapshot-controller/*
 }
 
 SYSTEMD_PACKAGES += "${PN} kube-proxy"
@@ -102,5 +139,6 @@ FILES_${PN}-misc = "\
 
 RDEPENDS_${PN} += "\
 	bash \
+	conntrack-tools \
 	kube-proxy \
 	"
