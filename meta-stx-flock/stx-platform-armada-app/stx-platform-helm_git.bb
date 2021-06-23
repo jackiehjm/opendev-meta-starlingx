@@ -1,85 +1,61 @@
-
-SUMMARY = "StarlingX Platform Helm charts"
-DESCRIPTION = "StarlingX Platform Helm charts"
+SUMMARY = "StarlingX K8S application: Platform Integration"
+DESCRIPTION = "StarlingX K8S application: Platform Integration"
 
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/Apache-2.0;md5=89aea4e17d99a7cacdbeed46a0096b10"
 
 DEPENDS += " \
     helm-native \
-    openstack-helm \
     openstack-helm-infra \
+    python-k8sapp-platform \
+    python-k8sapp-platform-wheels \
 "
 
-PROTOCOL = "https"
-BRANCH = "r/stx.3.0"
-SRCREV_platform-armada-app = "c67d1eeb605ea1da4ebb2a1219a6f54f05e3eb5e"
-SRCREV_helm-charts = "c01426a2500269fbf1a781214a361de0796297d1"
-
-SRC_URI = " \
-    git://opendev.org/starlingx/platform-armada-app.git;protocol=${PROTOCOL};branch=${BRANCH};name=platform-armada-app \
-    git://opendev.org/starlingx/helm-charts.git;protocol=${PROTOCOL};branch=${BRANCH};name=helm-charts;destsuffix=helm-charts \
-"
-
-S = "${WORKDIR}/git/stx-platform-helm/stx-platform-helm"
+require platform-armada-app-common.inc
+SUBPATH0 = "stx-platform-helm/stx-platform-helm"
 
 inherit allarch
+inherit stx-chartmuseum
+inherit stx-metadata
 
+PV = "1.0"
+PR = "28"
+PRAUTO = "tis"
+
+STX_REPO = "helm-charts"
+STX_SUBPATH = "node-feature-discovery/node-feature-discovery/helm-charts"
+
+helm_repo = "stx-platform"
 toolkit_version = "0.1.0"
 helm_folder = "${RECIPE_SYSROOT}${nonarch_libdir}/helm"
-helm_repo = "stx-platform"
 
 app_name = "platform-integ-apps"
 app_staging = "${B}/staging"
-app_tarball = "${app_name}.tgz"
+app_tarball = "${app_name}-${PV}-${PR}.tgz"
 app_folder = "/usr/local/share/applications/helm"
 
 do_configure[noexec] = "1"
 
 do_compile () {
-	# initialize helm and build the toolkit
-	# helm init --client-only does not work if there is no networking
-	# The following commands do essentially the same as: helm init
-	export HOME="${B}/${USER}"
-	export helm_home="${B}/${USER}/.helm"
-	rm -rf ${helm_home}
-
-	mkdir  -p ${helm_home}
-	mkdir  ${helm_home}/repository
-	mkdir  ${helm_home}/repository/cache
-	mkdir  ${helm_home}/repository/local
-	mkdir  ${helm_home}/plugins
-	mkdir  ${helm_home}/starters
-	mkdir  ${helm_home}/cache
-	mkdir  ${helm_home}/cache/archive
-
-	# Stage a repository file that only has a local repo
-	cp ${S}/files/repositories.yaml ${helm_home}/repository/repositories.yaml
-
-	# Stage a local repo index that can be updated by the build
-	cp ${S}/files/index.yaml ${helm_home}/repository/local/index.yaml
-
 	# Stage helm-toolkit in the local repo
 	cp ${helm_folder}/helm-toolkit-${toolkit_version}.tgz ${S}/helm-charts/
 
 	# Host a server for the charts
-	helm serve --repo-path . &
-	sleep 1
-	helm repo rm local
-	helm repo add local http://localhost:8879/charts
+	chartmuseum --debug --port=${CHARTMUSEUM_PORT} --context-path='/charts' --storage="local" --storage-local-rootdir="./helm-charts" &
+	sleep 2
+	helm repo add local http://localhost:${CHARTMUSEUM_PORT}/charts
 
 	# Make the charts. These produce a tgz file
-	cp -rf ${WORKDIR}/helm-charts/node-feature-discovery/node-feature-discovery/helm-charts/node-feature-discovery/ \
-		${S}/helm-charts/
+	cp -rf ${STX_METADATA_PATH}/node-feature-discovery/ ${S}/helm-charts/
 	cd ${S}/helm-charts
 	make rbd-provisioner
 	make ceph-pools-audit
+	make cephfs-provisioner
 	make node-feature-discovery
 	cd -
 
 	# Terminate helm server (the last backgrounded task)
 	kill $!
-	rm -rf ${helm_home}
 
 	# Create a chart tarball compliant with sysinv kube-app.py
 	# Setup staging
@@ -93,8 +69,12 @@ do_compile () {
 
 	# Populate metadata
 	sed -i 's/@APP_NAME@/${app_name}/g' ${app_staging}/metadata.yaml
-	sed -i 's/@APP_VERSION@/${version}-${tis_patch_ver}/g' ${app_staging}/metadata.yaml
+	sed -i 's/@APP_VERSION@/${PV}-${PR}/g' ${app_staging}/metadata.yaml
 	sed -i 's/@HELM_REPO@/${helm_repo}/g' ${app_staging}/metadata.yaml
+
+	# Copy the plugins: installed in the buildroot
+	mkdir -p ${app_staging}/plugins
+	cp ${RECIPE_SYSROOT}/plugins/*.whl ${app_staging}/plugins
 
 	# package it up
 	find . -type f ! -name '*.md5' -print0 | xargs -0 md5sum > checksum.md5
@@ -118,6 +98,5 @@ FILES_${PN} = " \
 
 RDEPENDS_${PN} = " \
     helm \
-    openstack-helm \
     openstack-helm-infra \
 "
