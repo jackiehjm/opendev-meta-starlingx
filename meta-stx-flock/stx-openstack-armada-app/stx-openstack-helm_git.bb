@@ -1,4 +1,3 @@
-
 SUMMARY = "StarlingX Openstack Application Helm charts"
 DESCRIPTION = "StarlingX Openstack Application Helm charts"
 
@@ -7,20 +6,21 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/Apache-2.0;md5
 
 DEPENDS += " \
     helm-native \
-    openstack-helm \
     openstack-helm-infra \
-    stx-platform-helm \
 "
 
 PROTOCOL = "https"
-BRANCH = "r/stx.3.0"
-SRCREV = "863f4b9733d3d4f4fd490606a94b84cfdaf2df2c"
+BRANCH = "r/stx.5.0"
+SRCREV = "61fc9116940ddfb9e477eedb7e8acce04338242f"
+
+PV = "1.0.0+git${SRCPV}"
 
 SRC_URI = "git://opendev.org/starlingx/openstack-armada-app;protocol=${PROTOCOL};branch=${BRANCH}"
 
 S = "${WORKDIR}/git/stx-openstack-helm/stx-openstack-helm"
 
 inherit allarch
+inherit stx-chartmuseum
 
 helm_folder = "${nonarch_libdir}/helm"
 armada_folder = "${nonarch_libdir}/armada"
@@ -31,36 +31,13 @@ helmchart_version = "0.1.0"
 do_configure[noexec] = "1"
 
 do_compile () {
-	# initialize helm and build the toolkit
-	# helm init --client-only does not work if there is no networking
-	# The following commands do essentially the same as: helm init
-	export HOME="${B}/${USER}"
-	export helm_home="${B}/${USER}/.helm"
-	rm -rf ${helm_home}
-
-	mkdir -p ${helm_home}
-	mkdir ${helm_home}/repository
-	mkdir ${helm_home}/repository/cache
-	mkdir ${helm_home}/repository/local
-	mkdir ${helm_home}/plugins
-	mkdir ${helm_home}/starters
-	mkdir ${helm_home}/cache
-	mkdir ${helm_home}/cache/archive
-
-	# Stage a repository file that only has a local repo
-	cp ${S}/files/repositories.yaml ${helm_home}/repository/repositories.yaml
-
-	# Stage a local repo index that can be updated by the build
-	cp ${S}/files/index.yaml ${helm_home}/repository/local/index.yaml
-
 	# Stage helm-toolkit in the local repo
-	cp ${RECIPE_SYSROOT}${helm_folder}/helm-toolkit-${toolkit_version}.tgz .
+	cp ${RECIPE_SYSROOT}${helm_folder}/helm-toolkit-${toolkit_version}.tgz ${S}/helm-charts/
 
 	# Host a server for the charts
-	helm serve --repo-path . &
-	sleep 1
-	helm repo rm local
-	helm repo add local http://localhost:8879/charts
+	chartmuseum --debug --port=${CHARTMUSEUM_PORT} --context-path='/charts' --storage="local" --storage-local-rootdir="./helm-charts" &
+	sleep 2
+	helm repo add local http://localhost:${CHARTMUSEUM_PORT}/charts
 
 	# Make the charts. These produce a tgz file
 	cd ${S}/helm-charts
@@ -70,14 +47,14 @@ do_compile () {
 	make fm-rest-api
 	make nginx-ports-control
 	make dcdbsync
+	make psp-rolebinding
 	cd -
 
 	# terminate helm server (the last backgrounded task)
 	kill $!
-	rm -rf ${helm_home}
 
 	# Remove the helm-toolkit tarball
-	rm helm-toolkit-${toolkit_version}.tgz
+	rm ${S}/helm-charts/helm-toolkit-${toolkit_version}.tgz
 }
 
 do_install () {
@@ -99,4 +76,6 @@ RDEPENDS_${PN} = " \
     helm \
     openstack-helm \
     openstack-helm-infra \
+    python-k8sapp-openstack \
+    python-k8sapp-openstack-wheels \
 "
