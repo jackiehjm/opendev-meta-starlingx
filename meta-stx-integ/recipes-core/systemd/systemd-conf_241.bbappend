@@ -14,4 +14,5 @@ do_install_append () {
 	install -d -m 0755 ${D}/${sysconfdir}/systemd
 	install -m644 ${STX_METADATA_PATH}/files/journald.conf ${D}/${sysconfdir}/systemd/journald.conf
 	chmod 644 ${D}/${sysconfdir}/systemd/journald.conf
+	sed -i -e '/^Storage/s/none/persistent/' ${D}/${sysconfdir}/systemd/journald.conf
 }
