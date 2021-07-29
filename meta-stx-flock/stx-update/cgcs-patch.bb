@@ -96,7 +96,7 @@ do_install_append () {
 	install -m 500 upgrade-start-pkg-extract ${D}/${sbindir}/upgrade-start-pkg-extract
 
 	sed -i -e 's/createrepo/createrepo_c/' ${D}/${sysconfdir}/init.d/sw-patch-controller
-
+	sed -i -e 's|${base_bindir}/dnf|${bindir}/dnf|' ${D}/${libdir}/python2.7/site-packages/cgcs_patch/patch_agent.py
 }
 
 FILES_${PN} = " \
