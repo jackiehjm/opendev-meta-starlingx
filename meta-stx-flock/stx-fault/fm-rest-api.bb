@@ -42,6 +42,8 @@ EOF
 
 	oslo-config-generator --config-file /etc/fm/config-generator.conf --output-file /etc/fm/fm.conf.sample
 	mv /etc/fm/fm.conf.sample /etc/fm/fm.conf
+	chmod 600 /etc/fm/fm.conf
+	chown fm:fm /etc/fm/fm.conf
 	rm /etc/fm/config-generator.conf
 }
 
