@@ -3,10 +3,10 @@ DESCRIPTION = "stx-gui"
 PACKAGES = "starlingx-dashboard"
 
 PROTOCOL = "https"
-BRANCH = "r/stx.3.0"
-SRCREV = "d1c22e49a95f92e91049b96f44e685f46785977c"
+BRANCH = "r/stx.5.0"
+SRCREV = "b7bd6ddd7af6c118e37c979689703343ca85631c"
 S = "${WORKDIR}/git"
-PV = "1.0.0"
+PV = "1.0.0+git${SRCPV}"
 
 LICENSE = "Apache-2.0"
 
@@ -50,12 +50,18 @@ do_install () {
 	install -d -m 0755 ${D}/${datadir}/openstack-dashboard/openstack_dashboard/enabled/
 	install -d -m 0755 ${D}/${datadir}/openstack-dashboard/openstack_dashboard/themes/starlingx/
 	install -d -m 0755 ${D}/${datadir}/openstack-dashboard/openstack_dashboard/local/local_settings.d
+	install -d -m 0755 ${D}/${datadir}/openstack-dashboard/openstack_dashboard/starlingx_templates/
+
 	cp -ra ${D}${PYTHON_SITEPACKAGES_DIR}/starlingx_dashboard/enabled/* \
 			${D}/${datadir}/openstack-dashboard/openstack_dashboard/enabled/
 	cp -ra ${D}${PYTHON_SITEPACKAGES_DIR}/starlingx_dashboard/themes/starlingx/* \
 			${D}/${datadir}/openstack-dashboard/openstack_dashboard/themes/starlingx/
 	cp -ra ${D}${PYTHON_SITEPACKAGES_DIR}/starlingx_dashboard/local/local_settings.d/* \
 			${D}/${datadir}/openstack-dashboard/openstack_dashboard/local/local_settings.d
+	cp -ra ${D}${PYTHON_SITEPACKAGES_DIR}/starlingx_dashboard/starlingx_templates/* \
+			${D}/${datadir}/openstack-dashboard/openstack_dashboard/starlingx_templates/
+	chmod -R 0755 ${D}/${datadir}/openstack-dashboard/openstack_dashboard/starlingx_templates/*
+
 	# comment out this line with syntax error
 	sed -i -e 's|^OPENSTACK_NEUTRON_NETWORK|# &|' \
 			${D}/${datadir}/openstack-dashboard/openstack_dashboard/local/local_settings.d/_30_stx_local_settings.py
