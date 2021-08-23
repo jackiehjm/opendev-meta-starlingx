@@ -1,8 +1,22 @@
+From 3d5b0acaf62845c69861df43f6d9584b68608096 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 27 May 2021 15:33:36 +0800
+Subject: [PATCH 05/12] puppet-sysinv-updates-for-poky-stx
+
+Upstream-Status: Inappropriate [poky-stx specific]
+
+Rebased for stx 5.0
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../puppet-sysinv/src/sysinv/manifests/params.pp   | 37 ++++++++++++++++------
+ 1 file changed, 27 insertions(+), 10 deletions(-)
+
 diff --git a/modules/puppet-sysinv/src/sysinv/manifests/params.pp b/modules/puppet-sysinv/src/sysinv/manifests/params.pp
-index 438aa37..9fc72e9 100644
+index 285220d..d401f23 100644
 --- a/modules/puppet-sysinv/src/sysinv/manifests/params.pp
 +++ b/modules/puppet-sysinv/src/sysinv/manifests/params.pp
-@@ -21,15 +21,30 @@ class sysinv::params {
+@@ -22,16 +22,33 @@ class sysinv::params {
    $sysinv_paste_api_ini = '/etc/sysinv/api-paste.ini'
  
    if $::osfamily == 'Debian' {
@@ -14,6 +28,7 @@ index 438aa37..9fc72e9 100644
 -    $conductor_service  = 'sysinv-conductor'
 -    $agent_package      = 'sysinv'
 -    $agent_service      = 'sysinv-agent'
+-    $certmon_package    = 'cert-mon'
 -    $db_sync_command    = 'sysinv-dbsync'
 +    if $::operatingsystem == 'poky-stx' {
 +
@@ -25,6 +40,7 @@ index 438aa37..9fc72e9 100644
 +      $conductor_service  = 'sysinv-conductor'
 +      $agent_package      = 'sysinv-agent'
 +      $agent_service      = 'sysinv-agent'
++      $certmon_package    = 'cert-mon'
 +      $db_sync_command    = 'sysinv-dbsync'
 +
 +    } else {
@@ -37,8 +53,13 @@ index 438aa37..9fc72e9 100644
 +      $conductor_service  = 'sysinv-conductor'
 +      $agent_package      = 'sysinv'
 +      $agent_service      = 'sysinv-agent'
++      $certmon_package    = 'cert-mon'
 +      $db_sync_command    = 'sysinv-dbsync'
++
 +    }
  
    } elsif($::osfamily == 'RedHat') {
  
+-- 
+2.7.4
+
