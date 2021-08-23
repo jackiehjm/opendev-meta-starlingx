@@ -1,4 +1,4 @@
-
+GOVERSION = "1.14%"
 PREFERRED_VERSION_keyutils = "1.6"
 PREFERRED_VERSION_python-voluptuous = "0.8.9"
 PREFERRED_VERSION_python3-cherrypy = "18.2.0"
