@@ -1,12 +1,15 @@
 DESCRIPTION = "stx-nfv"
 
 PROTOCOL = "https"
-BRANCH = "r/stx.3.0"
+BRANCH = "r/stx.5.0"
 SRCNAME = "nfv"
-SRCREV = "aaa932c00e028dcbaf0eed6843c4d3e51f09b2c1"
-SRCREV_opendev = "aaa932c00e028dcbaf0eed6843c4d3e51f09b2c1"
-DESTSUFFIX = "${PN}-${PV}"
-PV = "1.0.0"
+SRCREV = "1d7e5be68aa1d8aa167244411d1828bfc3e3d787"
+
+STXPV = "1.0.0"
+DESTSUFFIX = "${BPN}-${STXPV}"
+PV = "${STXPV}+git${SRCPV}"
+
+S = "${WORKDIR}/${DESTSUFFIX}"
 
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
