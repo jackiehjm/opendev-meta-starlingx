@@ -98,8 +98,6 @@ RDEPENDS_packagegroup-stx-fault = " \
         fm-mgr \
         fm-rest-api \
         python-fmclient \
-        snmp-audittrail \
-        snmp-ext \
         "
 
 RDEPENDS_packagegroup-stx-ha = " \
