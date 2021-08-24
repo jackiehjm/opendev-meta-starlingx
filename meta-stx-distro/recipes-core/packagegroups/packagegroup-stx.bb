@@ -238,4 +238,5 @@ RDEPENDS_packagegroup-stx-armada-app = "\
 	stx-monitor-helm \
 	stx-openstack-helm \
 	stx-platform-helm \
+	stx-cert-manager-helm \
 	"
