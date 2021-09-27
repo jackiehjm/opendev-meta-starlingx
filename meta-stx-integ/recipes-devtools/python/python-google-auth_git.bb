@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327"
 
 SRCREV = "1322d896ba725b8d73fd7ac4793601d9f574a839"
 PROTOCOL = "https"
-BRANCH = "master"
+BRANCH = "main"
 S = "${WORKDIR}/git"
 PV = "1.6.3+git${SRCPV}"
 
