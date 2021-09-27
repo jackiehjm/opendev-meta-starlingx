@@ -9,6 +9,7 @@ DEPENDS += " \
 "
 
 PROTOCOL = "https"
+BRANCH = "main"
 SRCREV = "945017287598479ba8653d9baf3ff26f7fe31e50"
 
 PV = "1.0.0+git${SRCPV}"
@@ -34,7 +35,7 @@ SRC_URI_STX = " \
 	"
 
 SRC_URI = " \
-	git://github.com/elastic/helm-charts;protocol=${PROTOCOL} \
+	git://github.com/elastic/helm-charts;protocol=${PROTOCOL};branch=${BRANCH} \
 	"
 
 PATCHTOOL = "git"
