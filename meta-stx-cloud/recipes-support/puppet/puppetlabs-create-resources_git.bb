@@ -13,7 +13,7 @@ S = "${WORKDIR}/git"
 
 
 SRC_URI = " \
-	git://github.com/puppetlabs/puppetlabs-create_resources.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
+	git://gitee.com/mirrors_puppetlabs/puppetlabs-create_resources.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
 	file://${PN}/Add-gemspec.patch \
 	file://${PN}/metadata.json.patch \
 	"
