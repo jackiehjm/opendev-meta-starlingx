@@ -4,7 +4,7 @@ DESCRIPTION = " stx-ansible-playbooks"
 STABLE = "starlingx/master"
 PROTOCOL = "https"
 BRANCH = "r/stx.5.0"
-SRCREV = "490874f7bbd60f0117aa08d5a5fd582670d801b6"
+SRCREV = "d1aa4e6064bfbf0537a954ad6458518de5226602"
 S = "${WORKDIR}/git"
 PV = "1.0.0+git${SRCPV}"
 
