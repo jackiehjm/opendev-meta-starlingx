@@ -5,7 +5,7 @@ STABLE = "starlingx/master"
 PROTOCOL = "https"
 SRCNAME = "stx-puppet"
 BRANCH = "r/stx.5.0"
-SRCREV = "fddac0bf3cc16be78743961f0b9379a48605707a"
+SRCREV = "ccad5524de68e8e98f072385d2192a62d9f4dd41"
 S = "${WORKDIR}/git"
 PV = "1.0.0+git${SRCPV}"
 
