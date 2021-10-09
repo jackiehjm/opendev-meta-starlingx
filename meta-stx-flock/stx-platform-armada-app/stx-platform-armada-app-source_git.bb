@@ -5,4 +5,4 @@ inherit stx-source
 STX_REPO = "platform-armada-app"
 
 BRANCH = "r/stx.5.0"
-SRCREV = "42b97c591a38167623f6dccb35f3b3ff67fd78db"
+SRCREV = "8f770bdddac396d53fdd740d69610d6fca8fcd65"
