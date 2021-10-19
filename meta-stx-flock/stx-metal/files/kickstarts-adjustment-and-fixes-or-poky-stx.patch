@@ -1,7 +1,7 @@
-From 15703e7b9048abfc420d2a129c1c0e0d451373b7 Mon Sep 17 00:00:00 2001
+From 88e447ec0353ea21312020538d985774ebf4f4cf Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Thu, 20 May 2021 11:37:43 +0800
-Subject: [PATCH] kickstarts: adjustment fnd fixes or poky-stx
+Subject: [PATCH] kickstarts: adjustment and fixes or poky-stx
 
 Upstream-Status: Inappropriate [OE specific]
 
@@ -13,11 +13,11 @@ Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
  .../kickstarts/post_kernel_aio_and_worker.cfg      |  4 +-
  bsp-files/kickstarts/post_kernel_controller.cfg    |  4 +-
  bsp-files/kickstarts/post_kernel_storage.cfg       |  4 +-
- bsp-files/kickstarts/post_usb_controller.cfg       |  3 +-
+ bsp-files/kickstarts/post_usb_controller.cfg       |  4 +-
  bsp-files/kickstarts/pre_common_head.cfg           | 33 ++++++++++-
- bsp-files/kickstarts/pre_pkglist.cfg               | 20 +------
- bsp-files/kickstarts/pre_pkglist_lowlatency.cfg    | 19 +------
- 8 files changed, 102 insertions(+), 49 deletions(-)
+ bsp-files/kickstarts/pre_pkglist.cfg               | 19 +------
+ bsp-files/kickstarts/pre_pkglist_lowlatency.cfg    | 18 +-----
+ 8 files changed, 103 insertions(+), 47 deletions(-)
 
 diff --git a/bsp-files/kickstarts/post_common.cfg b/bsp-files/kickstarts/post_common.cfg
 index 8214008..fe84bbd 100644
@@ -161,16 +161,17 @@ index 7452d80..3d39640 100644
  
  %end
 diff --git a/bsp-files/kickstarts/post_usb_controller.cfg b/bsp-files/kickstarts/post_usb_controller.cfg
-index 357c542..3917d8a 100644
+index 357c542..b13414a 100644
 --- a/bsp-files/kickstarts/post_usb_controller.cfg
 +++ b/bsp-files/kickstarts/post_usb_controller.cfg
-@@ -61,8 +61,7 @@ fi
+@@ -61,8 +61,8 @@ fi
  
  if [ -d $srcdir/Packages ] ; then
      mkdir -p /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx
 -    cp -r $srcdir/Packages /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx/Packages
 -    cp -r $srcdir/repodata /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx/repodata
 +    cp -r $srcdir/Packages/* /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx/
++    cp -r $srcdir/*.cfg /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx/
  fi
  
  if [ -d $srcdir/patches ]; then
@@ -228,10 +229,10 @@ index 01db59b..09c1828 100644
  # Note that any partitions you deleted are not expressed
  # here so unless you clear all partitions first, this is
 diff --git a/bsp-files/kickstarts/pre_pkglist.cfg b/bsp-files/kickstarts/pre_pkglist.cfg
-index 4653e74..16e4dcf 100644
+index 4653e74..87e4e3f 100644
 --- a/bsp-files/kickstarts/pre_pkglist.cfg
 +++ b/bsp-files/kickstarts/pre_pkglist.cfg
-@@ -1,22 +1,4 @@
+@@ -1,22 +1,5 @@
  %packages
 -@core
 -@base
@@ -251,15 +252,15 @@ index 4653e74..16e4dcf 100644
 --mlnx-ofa_kernel-rt
 --mlnx-ofa_kernel-rt-modules
 --qat16-rt
--xxxPACKAGE_LISTxxx
-+#@^stx-image-aio
++@STX_BASE@
+ xxxPACKAGE_LISTxxx
  %end
  
 diff --git a/bsp-files/kickstarts/pre_pkglist_lowlatency.cfg b/bsp-files/kickstarts/pre_pkglist_lowlatency.cfg
-index a6e6f14..16e4dcf 100644
+index a6e6f14..87e4e3f 100644
 --- a/bsp-files/kickstarts/pre_pkglist_lowlatency.cfg
 +++ b/bsp-files/kickstarts/pre_pkglist_lowlatency.cfg
-@@ -1,21 +1,4 @@
+@@ -1,21 +1,5 @@
  %packages
 -@core
 -@base
@@ -278,8 +279,8 @@ index a6e6f14..16e4dcf 100644
 --mlnx-ofa_kernel-rt
 --mlnx-ofa_kernel-modules
 --qat16
--xxxPACKAGE_LISTxxx
-+#@^stx-image-aio
++@STX_BASE@
+ xxxPACKAGE_LISTxxx
  %end
  
 -- 
