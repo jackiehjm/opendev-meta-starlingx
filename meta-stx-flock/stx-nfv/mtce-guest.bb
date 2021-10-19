@@ -1,9 +1,9 @@
-PACKAGES += " mtce-guestagent"
-PACKAGES += " mtce-guestserver"
+PACKAGES += " ${PN}agent"
+PACKAGES += " ${PN}server"
 
 require nfv-common.inc
 
-SUBPATH0 = "mtce-guest/src"
+SUBPATH0 = "${PN}/src"
 
 SRC_URI += " \
 	file://0001-mtce-guest-Fix-ldflags-usage.patch \
@@ -12,15 +12,15 @@ SRC_URI += " \
 	"
 
 inherit systemd
-SYSTEMD_PACKAGES += "mtce-guestagent"
-SYSTEMD_PACKAGES += "mtce-guestserver"
-SYSTEMD_SERVICE_mtce-guestagent = "guestAgent.service"
-SYSTEMD_SERVICE_mtce-guestserver= "guestServer.service"
-SYSTEMD_AUTO_ENABLE_mtce-guestagent = "disable"
+SYSTEMD_PACKAGES += "${PN}agent"
+SYSTEMD_PACKAGES += "${PN}server"
+SYSTEMD_SERVICE_${PN}agent = "guestAgent.service"
+SYSTEMD_SERVICE_${PN}server= "guestServer.service"
+SYSTEMD_AUTO_ENABLE_${PN}agent = "disable"
 SYSTEMD_AUTO_ENABLE_mtce-geustserver = "enable"
 DISTRO_FEATURES_BACKFILL_CONSIDERED_remove = "sysvinit"
 
-RDEPENDS_${PN} += " mtce-guestagent mtce-guestserver"
+RDEPENDS_${PN} += " ${PN}agent ${PN}server"
 
 EXTRA_OEMAKE = '-e MAJOR="1" MINONR="0" \
 		INCLUDES=" -I. -I${STAGING_INCDIR}/mtce-common/ -I${STAGING_INCDIR}/mtce-daemon/ " \
@@ -31,31 +31,31 @@ do_install() {
 	oe_runmake -e install DESTDIR=${D} PREFIX=${D}/usr/ \
 		       SYSCONFDIR=${D}/${sysconfdir} \
 		            LOCALBINDIR=${D}/${bindir} \
-			    UNITDIR=${D}/${systemd_system_unitdir} 
+			    UNITDIR=${D}/${systemd_system_unitdir}
 
 	rm -rf ${D}/var
 	rm -rf ${D}/var/run
 }
 
-FILES_mtce-guestserver = " \
+FILES_${PN}server = " \
 	${sysconfdir}/logrotate.d/guestServer.logrotate \
 	${systemd_system_unitdir}/guestServer.service \
+	${sysconfdir}/mtc/guestServer.ini \
+	${sysconfdir}/init.d/guestServer \
+	${sysconfdir}/pmon.d/guestServer.conf \
+	${bindir}/guestServer \
+	${sysconfdir}/mtc/tmp \
 	"
 
-FILES_mtce-guestagent = " \ 
+FILES_${PN}agent = " \
 	${systemd_system_unitdir}/guestAgent.service \
 	${sysconfdir}/logrotate.d/guestAgent.logrotate \
 	${libdir}/ocf/resource.d/platform/guestAgent \
-" 
-
-FILE_${PN} = " \
-	${sysconfdir}/mtc/tmp \
 	${sysconfdir}/mtc/guestAgent.ini \
-	${sysconfdir}/mtc/guestServer.ini \
-	${sysconfdir}/init.d/guestServer \
 	${sysconfdir}/init.d/guestAgent \
-	${sysconfdir}/pmon.d/guestServer.conf \
-	${bindir}/guestServer \
 	${bindir}/guestAgent \
-	"
+"
 
+FILES_${PN} = ""
+
+ALLOW_EMPTY_${PN} = "1"
