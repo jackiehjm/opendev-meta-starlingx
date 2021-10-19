@@ -12,20 +12,77 @@ inherit packagegroup
 
 PROVIDES = "${PACKAGES}"
 PACKAGES = " \
-	packagegroup-stx-upstream \
-	packagegroup-stx-puppet \
-	packagegroup-stx-fault \
-	packagegroup-stx-metal \
-	packagegroup-stx-nfv \
-	packagegroup-stx-monitoring \
-	packagegroup-stx-ha \
-	packagegroup-stx-config \
-	packagegroup-stx-config-files \
-	packagegroup-stx-distributedcloud \
-	packagegroup-stx-update \
-	packagegroup-stx-integ \
-	packagegroup-stx-utilities \
 	packagegroup-stx-armada-app \
+	packagegroup-stx-armada-app-controller \
+	packagegroup-stx-config \
+	packagegroup-stx-config-controller \
+	packagegroup-stx-config-files \
+	packagegroup-stx-config-files-controller \
+	packagegroup-stx-distributedcloud \
+	packagegroup-stx-distributedcloud-controller \
+	packagegroup-stx-fault \
+	packagegroup-stx-fault-controller \
+	packagegroup-stx-ha \
+	packagegroup-stx-ha-controller \
+	packagegroup-stx-integ \
+	packagegroup-stx-integ-controller \
+	packagegroup-stx-metal \
+	packagegroup-stx-metal-controller \
+	packagegroup-stx-monitoring \
+	packagegroup-stx-monitoring-controller \
+	packagegroup-stx-nfv-controller \
+	packagegroup-stx-puppet \
+	packagegroup-stx-update \
+	packagegroup-stx-update-controller \
+	packagegroup-stx-upstream \
+	packagegroup-stx-upstream-controller \
+	packagegroup-stx-utilities \
+	packagegroup-stx-utilities-controller \
+	\
+	packagegroup-stx-controller \
+	packagegroup-stx-storage \
+	packagegroup-stx-storage-standalone \
+	packagegroup-stx-worker \
+	packagegroup-stx-worker-standalone \
+	"
+
+# packages for controller role
+RDEPENDS_packagegroup-stx-controller = "\
+	packagegroup-stx-armada-app-controller \
+	packagegroup-stx-config-controller \
+	packagegroup-stx-config-files-controller \
+	packagegroup-stx-distributedcloud-controller \
+	packagegroup-stx-fault-controller \
+	packagegroup-stx-ha-controller \
+	packagegroup-stx-integ-controller \
+	packagegroup-stx-metal-controller \
+	packagegroup-stx-monitoring-controller \
+	packagegroup-stx-nfv-controller \
+	packagegroup-stx-update-controller \
+	packagegroup-stx-upstream-controller \
+	packagegroup-stx-utilities-controller \
+	\
+	starlingx-dashboard \
+	"
+
+# packages for worker role
+RDEPENDS_packagegroup-stx-worker = "\
+	mtce-guestserver \
+	"
+
+# packages for standalone worker, which can't be installed on AIO
+RDEPENDS_packagegroup-stx-worker-standalone = "\
+	workerconfig-standalone \
+	platform-util-noncontroller \
+	"
+
+# packages for storage role
+RDEPENDS_packagegroup-stx-storage = "\
+	drbd-utils \
+	ldapscripts \
+	"
+RDEPENDS_packagegroup-stx-storage-standalone = "\
+	platform-util-noncontroller \
 	"
 
 RDEPENDS_packagegroup-stx-puppet = "\
@@ -47,19 +104,19 @@ RDEPENDS_packagegroup-stx-config = " \
 	cert-mon \
 	config-gate-worker \
 	config-gate \
-	controllerconfig \
-	cgts-client \
+	playbookconfig \
 	sysinv-agent \
 	sysinv-fpga-agent \
 	sysinv \
-	workerconfig-subfunction \
 	tsconfig \
+	"
+RDEPENDS_packagegroup-stx-config-controller = " \
+	controllerconfig \
+	workerconfig-subfunction \
+	cgts-client \
 	"
 
 RDEPENDS_packagegroup-stx-config-files  = " \
-	lighttpd \
-	lighttpd-module-proxy \
-	lighttpd-module-setenv \
 	dnsmasq \
 	shadow \
 	openldap \
@@ -78,7 +135,6 @@ RDEPENDS_packagegroup-stx-config-files  = " \
 	initscripts \
 	procps \
 	iscsi-initiator-utils \
-	memcached \
 	libpam-runtime \
 	rabbitmq-server \
 	rsync \
@@ -87,10 +143,18 @@ RDEPENDS_packagegroup-stx-config-files  = " \
 	auditd \
 	audit-python \
 	"
+RDEPENDS_packagegroup-stx-config-files-controller  = " \
+	lighttpd \
+	lighttpd-module-proxy \
+	lighttpd-module-setenv \
+	memcached \
+	"
 
 RDEPENDS_packagegroup-stx-fault = " \
         fm-api \
         fm-common \
+        "
+RDEPENDS_packagegroup-stx-fault-controller = " \
         fm-doc \
         fm-mgr \
         fm-rest-api \
@@ -99,14 +163,17 @@ RDEPENDS_packagegroup-stx-fault = " \
 
 RDEPENDS_packagegroup-stx-ha = " \
         sm-common-libs \
-        libsm-common \
-        sm \
-        sm-db \
-        sm-api \
-        sm-client \
-        sm-tools \
 	sm-eru \
         stx-ocf-scripts \
+        "
+
+RDEPENDS_packagegroup-stx-ha-controller = " \
+        sm \
+        sm-db \
+        sm-tools \
+        libsm-common \
+        sm-api \
+        sm-client \
         "
 
 RDEPENDS_packagegroup-stx-metal = " \
@@ -116,37 +183,44 @@ RDEPENDS_packagegroup-stx-metal = " \
 	mtce-hostw \
 	mtce-lmon \
 	mtce-compute \
-	mtce-control \
 	mtce-storage \
-	pxe-network-installer \
+	"
+RDEPENDS_packagegroup-stx-metal-controller = " \
+	mtce-control \
 	platform-kickstarts \
+	pxe-network-installer \
 	"
 
 RDEPENDS_packagegroup-stx-monitoring = " \
 	collectd-extensions \
-	influxdb-extensions \
 	monitor-tools \
+	"
+RDEPENDS_packagegroup-stx-monitoring-controller = " \
+	influxdb-extensions \
 	vm-topology \
 	"
 
 RDEPENDS_packagegroup-stx-distributedcloud = " \
-	distributedcloud-dcmanager \
-	distributedcloud-dcorch \
 	distributedcloud-dcdbsync \
 	distributedcloud-ocf \
 	"
+RDEPENDS_packagegroup-stx-distributedcloud-controller = " \
+	distributedcloud-client-dcmanager \
+	distributedcloud-dcmanager \
+	distributedcloud-dcorch \
+	"
 
-RDEPENDS_packagegroup-stx-nfv = " \
+RDEPENDS_packagegroup-stx-nfv-controller = " \
 	nfv-common \
 	nfv-plugins \
 	nfv-tools \
 	nfv-vim \
 	nfv-client \
-	mtce-guest\
+	mtce-guestagent \
+	mtce-guestserver \
 	"
 
 RDEPENDS_packagegroup-stx-upstream = " \
-	barbican \
 	python-neutronclient \
 	python-aodhclient \
 	python-barbican \
@@ -154,14 +228,17 @@ RDEPENDS_packagegroup-stx-upstream = " \
 	python-cinderclient \
 	python-glanceclient \
 	python-gnocchiclient \
-	python-django-horizon \
 	python-heatclient \
-	python-ironicclient \
 	python-keystoneauth1 \
 	python-keystoneclient \
 	python-novaclient \
 	python-openstackclient \
 	python-openstacksdk \
+	"
+RDEPENDS_packagegroup-stx-upstream-controller = " \
+	barbican \
+	python-django-horizon \
+	python-ironicclient \
 	python-pankoclient \
 	openstack-ras \
 	"
@@ -169,8 +246,10 @@ RDEPENDS_packagegroup-stx-upstream = " \
 RDEPENDS_packagegroup-stx-update = " \
 	cgcs-patch \
 	cgcs-patch-agent \
-	cgcs-patch-controller \
 	enable-dev-patch \
+	"
+RDEPENDS_packagegroup-stx-update-controller = " \
+	cgcs-patch-controller \
 	patch-alarm \
 	"
 
@@ -190,31 +269,32 @@ RDEPENDS_packagegroup-stx-integ = " \
 	puppetlabs-postgresql \
 	puppet-puppi \
 	mariadb \
-	drbd-utils \
 	docker-distribution \
 	docker-forward-journald \
 	armada \
 	etcd \
 	kexec-tools \
 	kubernetes \
-	ldapscripts \
-	python-3parclient \
 	python-cherrypy \
-	python-lefthandclient \
 	python-setuptools \
-	python-ryu \
 	spectre-meltdown-checker \
 	kvm-timer-advance-setup \
 	ceph \
 	lldpd \
         lvm2 \
         tzdata \
+	registry-token-server \
+	"
+RDEPENDS_packagegroup-stx-integ-controller = " \
+	drbd-utils \
+	ldapscripts \
+	python-3parclient \
+	python-lefthandclient \
+	python-ryu \
 	"
 
 RDEPENDS_packagegroup-stx-utilities = " \
 	build-info \
-	python-cephclient \
-	ceph-manager \
 	stx-ssl \
 	collector \
 	collect-engtools \
@@ -224,8 +304,13 @@ RDEPENDS_packagegroup-stx-utilities = " \
 	stx-extensions \
 	worker-utils \
 	update-motd \
-	platform-util \
 	pci-irq-affinity \
+	platform-util \
+	"
+RDEPENDS_packagegroup-stx-utilities-controller = " \
+	ceph-manager \
+	python-cephclient \
+	platform-util-controller \
 	"
 
 RDEPENDS_packagegroup-stx-armada-app = "\
@@ -236,6 +321,8 @@ RDEPENDS_packagegroup-stx-armada-app = "\
 	stx-monitor-helm \
 	stx-openstack-helm \
 	stx-platform-helm \
+	"
+RDEPENDS_packagegroup-stx-armada-app-controller = "\
 	stx-cert-manager-helm \
 	stx-nginx-ingress-controller-helm \
 	"

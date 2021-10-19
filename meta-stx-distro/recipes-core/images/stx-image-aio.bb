@@ -6,30 +6,33 @@ LICENSE = "MIT"
 CORE_IMAGE_EXTRA_INSTALL = " \
 	packagegroup-basic \
 	packagegroup-core-base-utils  \
+	packagegroup-core-full-cmdline \
+	packagegroup-core-lsb \
+	"
+
+STX_AIO_PKGS = "\
+	packagegroup-stx-armada-app \
+	packagegroup-stx-config \
+	packagegroup-stx-config-files \
+	packagegroup-stx-distributedcloud \
+	packagegroup-stx-fault \
+	packagegroup-stx-ha \
+	packagegroup-stx-integ \
+	packagegroup-stx-metal \
+	packagegroup-stx-monitoring \
+	packagegroup-stx-puppet \
+	packagegroup-stx-update \
+	packagegroup-stx-upstream \
+	packagegroup-stx-utilities \
+	\
+	packagegroup-stx-controller \
+	packagegroup-stx-worker \
+	packagegroup-stx-storage \
 	"
 
 IMAGE_INSTALL_append = " \
 	${CORE_IMAGE_BASE_INSTALL} \
-	packagegroup-core-full-cmdline \
-	packagegroup-core-lsb \
-	packagegroup-stx-upstream \
-	packagegroup-stx-puppet \
-	packagegroup-stx-fault \
-	packagegroup-stx-metal \
-	packagegroup-stx-nfv \
-	packagegroup-stx-monitoring \
-	packagegroup-stx-ha \
-	packagegroup-stx-config-files \
-	packagegroup-stx-update \
-	packagegroup-stx-integ \
-	packagegroup-stx-config \
-	packagegroup-stx-distributedcloud \
-	packagegroup-stx-utilities \
-	packagegroup-stx-armada-app \
-	starlingx-dashboard \
-	playbookconfig \
-	distributedcloud-client-dcmanager \
-	registry-token-server \
+	${STX_AIO_PKGS} \
 	rt-tests \
 	kernel-dev \
 	"
