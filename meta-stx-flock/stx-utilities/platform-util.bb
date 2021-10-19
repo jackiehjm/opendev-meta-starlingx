@@ -8,13 +8,17 @@ SUBPATH0 = "utilities/platform-util/platform-util"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
+PACKAGES =+ "${PN}-controller ${PN}-noncontroller"
+
 RDEPENDS_${PN}_append  = " bash"
+RDEPENDS_${PN}-controller = "bash"
 
 inherit setuptools systemd
+
 DISTRO_FEATURES_BACKFILL_CONSIDERED_remove = "sysvinit"
-SYSTEMD_PACKAGES += " ${PN}"
-SYSTEMD_SERVICE_${PN} = "opt-platform.service"
-SYSTEMD_AUTO_ENABLE_${PN} = "disable"
+SYSTEMD_PACKAGES += " ${PN}-noncontroller"
+SYSTEMD_SERVICE_${PN}-noncontroller = "opt-platform.service"
+SYSTEMD_AUTO_ENABLE_${PN}-noncontroller = "disable"
 
 do_unpack_append() {
     bb.build.exec_func('do_restore_files', d)
@@ -55,4 +59,13 @@ do_install_append() {
 	install -m0750 set_keystone_user_option.sh ${D}/${bindir}/set_keystone_user_option.sh
 }
 
-FILES_${PN}_append  = " ${systemd_system_unitdir}/opt-platform.mount" 
+FILES_${PN}-controller  = " \
+	${bindir}/update-iso.sh \
+	${bindir}/gen-bootloader-iso.sh \
+	${bindir}/stx-iso-utils.sh \
+	"
+
+FILES_${PN}-noncontroller  = " \
+	${systemd_system_unitdir}/opt-platform.mount \
+	${systemd_system_unitdir}/opt-platform.service \
+	"
