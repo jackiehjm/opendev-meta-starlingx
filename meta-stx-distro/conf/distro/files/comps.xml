@@ -1,0 +1,268 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<comps>
+    <group><id>platform-controller</id>
+        <default>false</default>
+        <uservisible>true</uservisible>
+        <display_order>1024</display_order>
+        <name>platform-controller</name>
+        <description>Platform packages for controller</description>
+        <packagelist><packagereq type="mandatory">kernel-dev</packagereq>
+            <packagereq type="mandatory">packagegroup-basic</packagereq>
+            <packagereq type="mandatory">packagegroup-core-base-utils</packagereq>
+            <packagereq type="mandatory">packagegroup-core-full-cmdline</packagereq>
+            <packagereq type="mandatory">packagegroup-core-lsb</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-armada-app</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-armada-app-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config-files</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config-files-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-distributedcloud</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-distributedcloud-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-fault</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-fault-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-ha</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-ha-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-integ</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-integ-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-metal</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-metal-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-monitoring</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-monitoring-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-nfv-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-puppet</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-update</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-update-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-upstream</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-upstream-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-utilities</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-utilities-controller</packagereq>
+            <packagereq type="mandatory">rt-tests</packagereq>
+            <packagereq type="mandatory">starlingx-dashboard</packagereq>
+            </packagelist>
+        </group>
+    <group><id>platform-controller-worker</id>
+        <default>false</default>
+        <uservisible>true</uservisible>
+        <display_order>1024</display_order>
+        <name>platform-controller-worker</name>
+        <description>Platform packages for controller-worker</description>
+        <packagelist><packagereq type="mandatory">kernel-dev</packagereq>
+            <packagereq type="mandatory">packagegroup-basic</packagereq>
+            <packagereq type="mandatory">packagegroup-core-base-utils</packagereq>
+            <packagereq type="mandatory">packagegroup-core-full-cmdline</packagereq>
+            <packagereq type="mandatory">packagegroup-core-lsb</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-armada-app</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-armada-app-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config-files</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config-files-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-distributedcloud</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-distributedcloud-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-fault</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-fault-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-ha</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-ha-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-integ</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-integ-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-metal</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-metal-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-monitoring</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-monitoring-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-nfv-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-puppet</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-storage</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-update</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-update-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-upstream</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-upstream-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-utilities</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-utilities-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-worker</packagereq>
+            <packagereq type="mandatory">rt-tests</packagereq>
+            <packagereq type="mandatory">starlingx-dashboard</packagereq>
+            </packagelist>
+        </group>
+    <group><id>platform-controller-worker-lowlatency</id>
+        <default>false</default>
+        <uservisible>true</uservisible>
+        <display_order>1024</display_order>
+        <name>platform-controller-worker-lowlatency</name>
+        <description>Platform packages for controller-worker-lowlatency</description>
+        <packagelist><packagereq type="mandatory">kernel-dev</packagereq>
+            <packagereq type="mandatory">packagegroup-basic</packagereq>
+            <packagereq type="mandatory">packagegroup-core-base-utils</packagereq>
+            <packagereq type="mandatory">packagegroup-core-full-cmdline</packagereq>
+            <packagereq type="mandatory">packagegroup-core-lsb</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-armada-app</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-armada-app-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config-files</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config-files-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-distributedcloud</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-distributedcloud-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-fault</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-fault-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-ha</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-ha-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-integ</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-integ-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-metal</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-metal-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-monitoring</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-monitoring-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-nfv-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-puppet</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-storage</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-update</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-update-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-upstream</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-upstream-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-utilities</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-utilities-controller</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-worker</packagereq>
+            <packagereq type="mandatory">rt-tests</packagereq>
+            <packagereq type="mandatory">starlingx-dashboard</packagereq>
+            </packagelist>
+        </group>
+    <group><id>platform-worker</id>
+        <default>false</default>
+        <uservisible>true</uservisible>
+        <display_order>1024</display_order>
+        <name>platform-worker</name>
+        <description>Platform packages for worker</description>
+        <packagelist><packagereq type="mandatory">kernel-dev</packagereq>
+            <packagereq type="mandatory">packagegroup-basic</packagereq>
+            <packagereq type="mandatory">packagegroup-core-base-utils</packagereq>
+            <packagereq type="mandatory">packagegroup-core-full-cmdline</packagereq>
+            <packagereq type="mandatory">packagegroup-core-lsb</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-armada-app</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config-files</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-distributedcloud</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-fault</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-ha</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-integ</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-metal</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-monitoring</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-puppet</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-update</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-upstream</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-utilities</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-worker</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-worker-standalone</packagereq>
+            <packagereq type="mandatory">rt-tests</packagereq>
+            </packagelist>
+        </group>
+    <group><id>platform-worker-lowlatency</id>
+        <default>false</default>
+        <uservisible>true</uservisible>
+        <display_order>1024</display_order>
+        <name>platform-worker-lowlatency</name>
+        <description>Platform packages for worker-lowlatency</description>
+        <packagelist><packagereq type="mandatory">kernel-dev</packagereq>
+            <packagereq type="mandatory">packagegroup-basic</packagereq>
+            <packagereq type="mandatory">packagegroup-core-base-utils</packagereq>
+            <packagereq type="mandatory">packagegroup-core-full-cmdline</packagereq>
+            <packagereq type="mandatory">packagegroup-core-lsb</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-armada-app</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config-files</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-distributedcloud</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-fault</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-ha</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-integ</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-metal</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-monitoring</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-puppet</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-update</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-upstream</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-utilities</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-worker</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-worker-standalone</packagereq>
+            <packagereq type="mandatory">rt-tests</packagereq>
+            </packagelist>
+        </group>
+    <group><id>platform-storage</id>
+        <default>false</default>
+        <uservisible>true</uservisible>
+        <display_order>1024</display_order>
+        <name>platform-storage</name>
+        <description>Platform packages for storage</description>
+        <packagelist><packagereq type="mandatory">kernel-dev</packagereq>
+            <packagereq type="mandatory">packagegroup-basic</packagereq>
+            <packagereq type="mandatory">packagegroup-core-base-utils</packagereq>
+            <packagereq type="mandatory">packagegroup-core-full-cmdline</packagereq>
+            <packagereq type="mandatory">packagegroup-core-lsb</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-armada-app</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-config-files</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-distributedcloud</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-fault</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-ha</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-integ</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-metal</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-monitoring</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-puppet</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-storage</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-storage-standalone</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-update</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-upstream</packagereq>
+            <packagereq type="mandatory">packagegroup-stx-utilities</packagereq>
+            <packagereq type="mandatory">rt-tests</packagereq>
+            </packagelist>
+        </group>
+    <group><id>updates-controller</id>
+        <default>false</default>
+        <uservisible>true</uservisible>
+        <display_order>1024</display_order>
+        <name>updates-controller</name>
+        <description>Patches for controller</description>
+        <packagelist />
+        </group>
+    <group><id>updates-controller-worker</id>
+        <default>false</default>
+        <uservisible>true</uservisible>
+        <display_order>1024</display_order>
+        <name>updates-controller-worker</name>
+        <description>Patches for controller-worker</description>
+        <packagelist />
+        </group>
+    <group><id>updates-controller-worker-lowlatency</id>
+        <default>false</default>
+        <uservisible>true</uservisible>
+        <display_order>1024</display_order>
+        <name>updates-controller-worker-lowlatency</name>
+        <description>Patches for controller-worker-lowlatency</description>
+        <packagelist />
+        </group>
+    <group><id>updates-worker</id>
+        <default>false</default>
+        <uservisible>true</uservisible>
+        <display_order>1024</display_order>
+        <name>updates-worker</name>
+        <description>Patches for worker</description>
+        <packagelist />
+        </group>
+    <group><id>updates-worker-lowlatency</id>
+        <default>false</default>
+        <uservisible>true</uservisible>
+        <display_order>1024</display_order>
+        <name>updates-worker-lowlatency</name>
+        <description>Patches for worker-lowlatency</description>
+        <packagelist />
+        </group>
+    <group><id>updates-storage</id>
+        <default>false</default>
+        <uservisible>true</uservisible>
+        <display_order>1024</display_order>
+        <name>updates-storage</name>
+        <description>Patches for storage</description>
+        <packagelist />
+        </group>
+</comps>
