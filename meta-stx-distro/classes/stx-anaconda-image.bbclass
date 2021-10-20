@@ -16,10 +16,15 @@ KICKSTART_FILE ??= ""
 KICKSTART_FILE_EXTRA ??= ""
 WRL_INSTALLER_CONF ?= ""
 
+REPODATA_COMPS = "${LAYER_PATH_meta-stx-distro}/conf/distro/files/comps.xml"
+
 # Extra packages that will be added in the rpm repo in anaconda installer ISO image
 REPO_EXTRA_PKG = "\
-    xfsprogs-* \
     glibc-binary-localedata-* \
+    packagegroup-stx-*-standalone-* \
+    platform-util-noncontroller-* \
+    workerconfig-standalone-* \
+    xfsprogs-* \
 "
 
 build_iso_prepend() {
@@ -99,8 +104,8 @@ wrl_installer_copy_local_repos() {
             fi
         done
 
-        cd ${deploy_dir_rpm}
         set -x
+        cd ${deploy_dir_rpm}
         # Add the packages in target image pkglist
         cat ${target_image_input_pkglist} > ${target_image_output_pkglist}.tmp
 
@@ -108,7 +113,7 @@ wrl_installer_copy_local_repos() {
         for pkgs in ${REPO_EXTRA_PKG}; do
             pkg_files=$(find . -type f -name ${pkgs})
             if [ -z "${pkg_files}" ]; then
-                bbwarn "Package ${pkgs} not found, please check if there is anything wrong or just remove it from the list."
+                bbwarn "Package ${pkgs} not found, please check if there is anything wrong or just remove it from the list REPO_EXTRA_PKG."
             else
                 for pkg_file in ${pkg_files}; do
                     basename ${pkg_file} >> ${target_image_output_pkglist}.tmp
@@ -130,7 +135,7 @@ wrl_installer_copy_local_repos() {
         done
         cd -
 
-        createrepo_c --update -q ${IMAGE_ROOTFS}/Packages.$prj_name/
+        createrepo_c --update -q -g ${REPODATA_COMPS} ${IMAGE_ROOTFS}/Packages.$prj_name/
     fi
 }
 
@@ -293,17 +298,24 @@ _EOF
 	        exit 1
 	    fi
 
+	    target_image_input_stx_base_list=$(sed -n 's/^STX_BASE_LIST="\(.*\)"/\1/p' ${target_build}/installersupport_${target_image})
+	    if [ ! -f ${target_image_input_stx_base_list} ]; then
+	        bberror "The target stx_base_list file '${target_image_input_stx_base_list}' doesn't exist!"
+	    fi
+
 	    ks_cfg="${INSTALLER_CONFDIR}/ks.cfg.$prj_name"
 	    if [ -n "${KICKSTART_FILE}" ]; then
 	        ks_file="`echo ${KICKSTART_FILE} | awk '{print $'"$counter"'}'`"
 	        bbnote "Copying kickstart file $ks_file to $ks_cfg ..."
 	        mkdir -p ${INSTALLER_CONFDIR}
 	        cp $ks_file $ks_cfg
+	        sed -i -e "/@STX_BASE@/ r ${target_image_input_stx_base_list}" -e '/@STX_BASE@/d' $ks_cfg
 	    fi
 	    if [ -n "${KICKSTART_FILE_EXTRA}" ]; then
 	        for ks_file in ${KICKSTART_FILE_EXTRA}; do
 	            if [ -f $ks_file ]; then
 	                cp $ks_file ${INSTALLER_CONFDIR}
+	                sed -i -e "/@STX_BASE@/ r ${target_image_input_stx_base_list}" -e '/@STX_BASE@/d' ${INSTALLER_CONFDIR}/*.cfg
 	            else
 	                bbwarn "The kickstart file $ks_file in KICKSTART_FILE_EXTRA doesn't exist!"
 	            fi
