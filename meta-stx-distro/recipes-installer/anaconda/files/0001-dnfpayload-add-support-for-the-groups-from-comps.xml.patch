@@ -1,0 +1,105 @@
+From 5eb4228f13ec6214cd6f909a2df3097a4a3927a9 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Mon, 25 Oct 2021 16:36:35 +0800
+Subject: [PATCH] dnfpayload: add support for the groups from comps.xml
+
+Upstream-Status: Inappropriate [poky-stx specific]
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ pyanaconda/payload/dnfpayload.py | 51 +++++++++++++++++++++++++++-------------
+ 1 file changed, 35 insertions(+), 16 deletions(-)
+
+diff --git a/pyanaconda/payload/dnfpayload.py b/pyanaconda/payload/dnfpayload.py
+index 11f7728..38b98ac 100644
+--- a/pyanaconda/payload/dnfpayload.py
++++ b/pyanaconda/payload/dnfpayload.py
+@@ -691,15 +691,31 @@ class DNFPayload(payload.PackagePayload):
+         if not group_id:
+             return
+ 
+-        glob = self._complementary_glob(group_id)
+-
+-        # get all available languages in repos
+-        available_packs = self._base.sack.query().available() \
+-            .filter(name__glob = "*-%s"%glob)
+-        allpkgnames = [p.name for p in available_packs]
+-        log.info("allpkgnames %d" % len(allpkgnames))
+-        for pkgname in allpkgnames:
+-            self._install_package(pkgname, strict=False)
++        grp = self._base.comps.group_by_pattern(group_id)
++        if grp is None:
++            glob = self._complementary_glob(group_id)
++
++            # get all available languages in repos
++            available_packs = self._base.sack.query().available() \
++                .filter(name__glob = "*-%s"%glob)
++            allpkgnames = [p.name for p in available_packs]
++            log.info("allpkgnames %d" % len(allpkgnames))
++            for pkgname in allpkgnames:
++                self._install_package(pkgname, strict=False)
++        else:
++            types = {'mandatory'}
++            if default:
++                types.add('default')
++            if optional:
++                types.add('optional')
++            try:
++                self._base.group_install(grp.id, types)
++            except dnf.exceptions.MarkingError as e:
++                # dnf-1.1.9 raises this error when a package is missing from a group
++                raise payload.NoSuchPackage(str(e), required=True)
++            except dnf.exceptions.CompsError as e:
++                # DNF raises this when it is already selected
++                log.debug(e)
+ 
+     def _select_linguas(self, image_linguas):
+         lc_globs = []
+@@ -724,9 +740,6 @@ class DNFPayload(payload.PackagePayload):
+         log.info("package_install %s, attempt %s, linguas %s" %
+                    (package_install, package_install_attemptonly, image_linguas))
+ 
+-        for pkg in package_install.split():
+-            self._install_package(pkg)
+-
+         self._select_linguas(image_linguas)
+ 
+         # dnf.base.environment_install excludes on packages instead of groups,
+@@ -796,7 +809,9 @@ class DNFPayload(payload.PackagePayload):
+     def groups(self):
+         """ List of group ids. """
+         log.info("%s %s" % (self.__class__.__name__, inspect.stack()[0][3]))
+-        return sorted(self.tasks.keys())
++        comps_groups = self._base.comps.groups_iter()
++        groups_list = sorted(self.tasks.keys()) + [g.id for g in comps_groups]
++        return groups_list
+ 
+     @property
+     def mirrorEnabled(self):
+@@ -866,7 +881,7 @@ class DNFPayload(payload.PackagePayload):
+         return grp.visible
+ 
+     def _groupHasInstallableMembers(self, grpid):
+-        return False
++        return True
+ 
+     def checkSoftwareSelection(self):
+         log.info("checking software selection")
+@@ -962,8 +977,12 @@ class DNFPayload(payload.PackagePayload):
+     def groupDescription(self, grpid):
+         """Return name/description tuple for the group specified by id."""
+         log.info("%s %s, %s" % (self.__class__.__name__, inspect.stack()[0][3], grpid))
+-        (name, description, group) = self.tasks[grpid]
+-        return (name, description)
++        grp = self._base.comps.group_by_pattern(grpid)
++        if grp is None:
++            (name, description, group) = self.tasks[grpid]
++            return (name, description)
++        else:
++            return (grp.ui_name, grp.ui_description)
+ 
+     def groupId(self, group_name):
+         """Translate group name to group ID.
+-- 
+2.7.4
+
