@@ -60,6 +60,7 @@ RDEPENDS_${PN}_append  = " \
 	python-stevedore \
 	python-webob \
 	python-websockify \
+	python-websocket-client \
 	python-webtest \
 	python-wsme \
 	python2-rpm \
