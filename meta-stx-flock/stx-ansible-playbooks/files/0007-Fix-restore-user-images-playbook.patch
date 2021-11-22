@@ -1,0 +1,74 @@
+From 7228f60e146286d0948ac67bee159a7b8c54f704 Mon Sep 17 00:00:00 2001
+From: Mihnea Saracin <Mihnea.Saracin@windriver.com>
+Date: Tue, 11 May 2021 18:56:03 +0300
+Subject: [PATCH] Fix restore user images playbook
+
+When running restore_user_images playbook,
+after the images will be uploaded to the local registry,
+the docker images stored in the local docker filesystem
+will be deleted by a python script called by the playbook.
+Sometimes this script will try to delete images
+that are not present into the local docker filesystem and
+will throw some errors.
+We fix this by adding a check before trying to delete an image.
+
+Also, updated the
+/playbooks/roles/common/push-docker-images/files/download_images.py
+file to do the same checks since it does similar steps
+and can also fail when deleting
+the images from the local docker cache.
+
+Upstream-Status: Backport
+
+Closes-Bug: 1928092
+Signed-off-by: Mihnea Saracin <Mihnea.Saracin@windriver.com>
+Change-Id: I1be45b2669ad1ab209aa49f050106dd1a7759cee
+---
+ .../common/push-docker-images/files/download_images.py      | 13 +++++++++++--
+ .../push-docker-images/files/push_pull_local_registry.py    |  6 +++++-
+ 2 files changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/playbookconfig/src/playbooks/roles/common/push-docker-images/files/download_images.py b/playbookconfig/src/playbooks/roles/common/push-docker-images/files/download_images.py
+index 99d307f..ac18589 100644
+--- a/playbookconfig/src/playbooks/roles/common/push-docker-images/files/download_images.py
++++ b/playbookconfig/src/playbooks/roles/common/push-docker-images/files/download_images.py
+@@ -87,8 +87,17 @@ def download_an_image(img):
+             # as opae container runs via docker.
+             # TODO: run opae with containerd.
+             if not ('n3000-opae' in target_img):
+-                client.remove_image(target_img)
+-                client.remove_image(local_img)
++                delete_warn = "WARNING: Image %s was not deleted because it was not " \
++                              "present into the local docker filesystem"
++                if client.images(target_img):
++                    client.remove_image(target_img)
++                else:
++                    print(delete_warn % target_img)
++                if client.images(local_img):
++                    client.remove_image(local_img)
++                else:
++                    print(delete_warn % local_img)
++
+             return target_img, True
+         except docker.errors.NotFound as e:
+             print(err_msg + str(e))
+diff --git a/playbookconfig/src/playbooks/roles/common/push-docker-images/files/push_pull_local_registry.py b/playbookconfig/src/playbooks/roles/common/push-docker-images/files/push_pull_local_registry.py
+index 3f95034..41b374e 100644
+--- a/playbookconfig/src/playbooks/roles/common/push-docker-images/files/push_pull_local_registry.py
++++ b/playbookconfig/src/playbooks/roles/common/push-docker-images/files/push_pull_local_registry.py
+@@ -58,7 +58,11 @@ def push_from_filesystem(image):
+             # as opae container runs via docker.
+             # TODO: run opae with containerd.
+             if not ('n3000-opae' in image):
+-                client.remove_image(image)
++                if client.images(image):
++                    client.remove_image(image)
++                else:
++                    print("WARNING: Image %s was not deleted because it "
++                          "was not present into the local docker filesystem" % image)
+             return image, True
+         except docker.errors.APIError as e:
+             print(err_msg + str(e))
+-- 
+2.7.4
+
