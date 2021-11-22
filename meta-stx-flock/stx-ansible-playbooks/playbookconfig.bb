@@ -18,6 +18,9 @@ SRC_URI = " \
 	file://0003-update_sysinv_database-wait-after-provision.patch \
 	file://0004-bringup_flock_services-use-systmd-for-fminit-and-add.patch \
 	file://0005-persist-config-add-retry-for-etcd.patch \
+	file://0006-Ensure-n3000-opae-image-cache-is-not-deleted.patch \
+	file://0007-Fix-restore-user-images-playbook.patch \
+	file://0008-Checking-images-on-registry.local-before-download.patch \
         "
 
 RDEPENDS_playbookconfig = " \

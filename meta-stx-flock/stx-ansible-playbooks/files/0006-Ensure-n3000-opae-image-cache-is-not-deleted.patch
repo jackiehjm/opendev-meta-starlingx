@@ -1,0 +1,37 @@
+From d23b932208b778ec73cc51bccf460310f16ceaad Mon Sep 17 00:00:00 2001
+From: Bin Qian <bin.qian@windriver.com>
+Date: Mon, 3 May 2021 15:32:06 -0400
+Subject: [PATCH] Ensure n3000-opae image cache is not deleted
+
+Skip removing n3000-opae image cache. This image is expected to be
+available to reset n3000 fpgas before docker local registry is ready.
+
+Upstream-Status: Backport
+
+Closes-Bug: 1927000
+Signed-off-by: Bin Qian <bin.qian@windriver.com>
+Change-Id: I3372d89c48b394c8cac6b9da06d2528bb6afa803
+---
+ .../common/push-docker-images/files/push_pull_local_registry.py     | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/playbookconfig/src/playbooks/roles/common/push-docker-images/files/push_pull_local_registry.py b/playbookconfig/src/playbooks/roles/common/push-docker-images/files/push_pull_local_registry.py
+index 96a300c..3f95034 100644
+--- a/playbookconfig/src/playbooks/roles/common/push-docker-images/files/push_pull_local_registry.py
++++ b/playbookconfig/src/playbooks/roles/common/push-docker-images/files/push_pull_local_registry.py
+@@ -54,7 +54,11 @@ def push_from_filesystem(image):
+             subprocess.check_call(["crictl", "pull", "--creds",
+                                    auth_str, image])
+             print("Image %s download succeeded by containerd" % image)
+-            client.remove_image(image)
++            # Clean up docker images except for n3000-opae
++            # as opae container runs via docker.
++            # TODO: run opae with containerd.
++            if not ('n3000-opae' in image):
++                client.remove_image(image)
+             return image, True
+         except docker.errors.APIError as e:
+             print(err_msg + str(e))
+-- 
+2.7.4
+
