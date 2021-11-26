@@ -21,6 +21,7 @@ SRC_URI = " \
 	file://0006-Ensure-n3000-opae-image-cache-is-not-deleted.patch \
 	file://0007-Fix-restore-user-images-playbook.patch \
 	file://0008-Checking-images-on-registry.local-before-download.patch \
+	file://0009-download_images-add-support-to-load-image-offline-fi.patch \
         "
 
 RDEPENDS_playbookconfig = " \
