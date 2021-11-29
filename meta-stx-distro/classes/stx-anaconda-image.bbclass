@@ -31,6 +31,7 @@ build_iso_prepend() {
 	install -d ${ISODIR}
 	ln -snf /.discinfo ${ISODIR}/.discinfo
 	ln -snf /.buildstamp ${ISODIR}/.buildstamp
+	ln -snf /Packages ${ISODIR}/Packages
 }
 
 build_iso_append() {
@@ -83,12 +84,11 @@ wrl_installer_copy_local_repos() {
 
     if [ -d "$deploy_dir_rpm" ]; then
         echo "Copy rpms from target build to installer image."
-        mkdir -p ${ISODIR}/Packages.$prj_name
-        ln -snf Packages.$prj_name ${ISODIR}/Packages
+        mkdir -p ${IMAGE_ROOTFS}/Packages.$prj_name
 
-        : > ${ISODIR}/Packages.$prj_name/.treeinfo
-        echo "[general]" >> ${ISODIR}/Packages.$prj_name/.treeinfo
-        echo "version = ${DISTRO_VERSION}" >> ${ISODIR}/Packages.$prj_name/.treeinfo
+        : > ${IMAGE_ROOTFS}/Packages.$prj_name/.treeinfo
+        echo "[general]" >> ${IMAGE_ROOTFS}/Packages.$prj_name/.treeinfo
+        echo "version = ${DISTRO_VERSION}" >> ${IMAGE_ROOTFS}/Packages.$prj_name/.treeinfo
 
         # Determine the max channel priority
         channel_priority=5
@@ -96,11 +96,11 @@ wrl_installer_copy_local_repos() {
             channel_priority=$(expr $channel_priority + 5)
         done
 
-        : > ${ISODIR}/Packages.$prj_name/.feedpriority
+        : > ${IMAGE_ROOTFS}/Packages.$prj_name/.feedpriority
         for arch in $installer_target_archs; do
-            if [ -d "$deploy_dir_rpm/"$arch -a ! -d "${ISODIR}/Packages.$prj_name/"$arch ]; then
+            if [ -d "$deploy_dir_rpm/"$arch -a ! -d "${IMAGE_ROOTFS}/Packages.$prj_name/"$arch ]; then
                 channel_priority=$(expr $channel_priority - 5)
-                echo "$channel_priority $arch" >> ${ISODIR}/Packages.$prj_name/.feedpriority
+                echo "$channel_priority $arch" >> ${IMAGE_ROOTFS}/Packages.$prj_name/.feedpriority
             fi
         done
 
@@ -130,12 +130,12 @@ wrl_installer_copy_local_repos() {
             if [ -z "${pkg_file}" ]; then
                 bbwarn "Package ${pkg} not found, please check if there is anything wrong or just remove it from the list."
             else
-                cp --parents -vf ${pkg_file} ${ISODIR}/Packages.$prj_name/
+                cp --parents -vf ${pkg_file} ${IMAGE_ROOTFS}/Packages.$prj_name/
             fi
         done
         cd -
 
-        createrepo_c --update -q -g ${REPODATA_COMPS} ${ISODIR}/Packages.$prj_name/
+        createrepo_c --update -q -g ${REPODATA_COMPS} ${IMAGE_ROOTFS}/Packages.$prj_name/
     fi
 }
 
