@@ -24,7 +24,7 @@ index 18eec2c..3ac6cfc 100755
  trap finish EXIT
 
 +# Pattern for know errors, will be ignored when checking errors
-+KNOWN_ERRORS="Error.*remount /scratch"
++KNOWN_ERRORS="Error.*remount "
 
  # Set Keystone endpoint type to internal to prevent SSL cert failures during config
  export OS_ENDPOINT_TYPE=internalURL
