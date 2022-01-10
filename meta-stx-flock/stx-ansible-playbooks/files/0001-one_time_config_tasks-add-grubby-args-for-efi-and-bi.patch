@@ -1,0 +1,76 @@
+From 63c1468a81c440bab29a6df5762675eb8379ac19 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Mon, 10 Jan 2022 13:45:54 +0800
+Subject: [PATCH] one_time_config_tasks: add grubby args for efi and bios mode
+
+The grub.cfg and grubenv is not in the default location as on
+CentOS, --config-file and --env need to be specified to make
+grubby work correctly, so modify the tasks to add these args
+for both efi and bios modes.
+
+Upstream-Status: Inappropriate [OE specific]
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../persist-config/tasks/one_time_config_tasks.yml | 33 ++++++++++++++++------
+ .../roles/bootstrap/persist-config/vars/main.yml   |  2 ++
+ 2 files changed, 27 insertions(+), 8 deletions(-)
+
+diff --git a/playbookconfig/src/playbooks/roles/bootstrap/persist-config/tasks/one_time_config_tasks.yml b/playbookconfig/src/playbooks/roles/bootstrap/persist-config/tasks/one_time_config_tasks.yml
+index b534acc..f5fa9cb 100644
+--- a/playbookconfig/src/playbooks/roles/bootstrap/persist-config/tasks/one_time_config_tasks.yml
++++ b/playbookconfig/src/playbooks/roles/bootstrap/persist-config/tasks/one_time_config_tasks.yml
+@@ -127,15 +127,32 @@
+ 
+   when: branding_result.stat.exists and branding_result.stat.isdir
+ 
+-- name: Get grub default kernel
+-  command: grubby --default-kernel
+-  register: grub_kernel_output
++- name: Check if it is EFI mode
++  stat:
++    path: /sys/firmware/efi
++  register: is_efi
+ 
+-- name: Add default security feature to kernel parameters
+-  command: "{{ item }}"
+-  with_items:
+-    - "grubby --update-kernel={{ grub_kernel_output.stdout_lines[0] }} --args='{{ default_security_feature }}'"
+-    - "grubby --efi --update-kernel={{ grub_kernel_output.stdout_lines[0] }} --args='{{ default_security_feature }}'"
++- name: Handle kernel parameters for EFI mode
++  block:
++    - name: Get grub default kernel for EFI mode
++      command: grubby --default-kernel {{ grubby_args_efi }}
++      register: grub_kernel_efi_output
++
++    - name: Add default security feature to kernel parameters for EFI mode
++      command: "grubby --efi {{ grubby_args_efi }} --update-kernel={{ grub_kernel_efi_output.stdout_lines[0] }} --args='{{ default_security_feature }}'"
++
++  when: is_efi.stat.exists and is_efi.stat.isdir
++
++- name: Handle kernel parameters for BIOS mode
++  block:
++    - name: Get grub default kernel for BIOS mode
++      command: grubby --default-kernel {{ grubby_args_bios }}
++      register: grub_kernel_output
++
++    - name: Add default security feature to kernel parameters for BIOS mode
++      command: "grubby {{ grubby_args_bios }} --update-kernel={{ grub_kernel_output.stdout_lines[0] }} --args='{{ default_security_feature }}'"
++
++  when: is_efi.stat.exists == False
+ 
+ - name: Gather drbd status
+   command: drbd-overview
+diff --git a/playbookconfig/src/playbooks/roles/bootstrap/persist-config/vars/main.yml b/playbookconfig/src/playbooks/roles/bootstrap/persist-config/vars/main.yml
+index 995dc96..91d4edb 100644
+--- a/playbookconfig/src/playbooks/roles/bootstrap/persist-config/vars/main.yml
++++ b/playbookconfig/src/playbooks/roles/bootstrap/persist-config/vars/main.yml
+@@ -8,3 +8,5 @@ ssl_ca_complete_flag: /etc/platform/.ssl_ca_complete
+ region_config: no
+ source_device_image_bind_dir: /opt/platform/device_images
+ target_device_image_bind_dir: /www/pages/device_images
++grubby_args_efi: "--config-file /boot/efi/EFI/BOOT/grub/grub.cfg --env /boot/efi/EFI/BOOT/grub/grubenv"
++grubby_args_bios: "--config-file /boot/grub/grub.cfg --env /boot/grub/grubenv"
+-- 
+2.7.4
+

@@ -14,6 +14,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 SRC_URI = " \
 	git://opendev.org/starlingx/ansible-playbooks.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
+	file://0001-one_time_config_tasks-add-grubby-args-for-efi-and-bi.patch \
 	file://0002-update_sysinv_database-do-not-fail-if-ceph-monitor-a.patch \
 	file://0003-update_sysinv_database-wait-after-provision.patch \
 	file://0004-bringup_flock_services-use-systmd-for-fminit-and-add.patch \
