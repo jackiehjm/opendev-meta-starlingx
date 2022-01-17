@@ -1,4 +1,4 @@
-From 88e447ec0353ea21312020538d985774ebf4f4cf Mon Sep 17 00:00:00 2001
+From 8ad437670c4b75e50f05c5226078e09b34d0c342 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Thu, 20 May 2021 11:37:43 +0800
 Subject: [PATCH] kickstarts: adjustment and fixes or poky-stx
@@ -10,14 +10,14 @@ Rebased for stx 5.0
 Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
 ---
  bsp-files/kickstarts/post_common.cfg               | 64 +++++++++++++++++++++-
- .../kickstarts/post_kernel_aio_and_worker.cfg      |  4 +-
- bsp-files/kickstarts/post_kernel_controller.cfg    |  4 +-
- bsp-files/kickstarts/post_kernel_storage.cfg       |  4 +-
+ .../kickstarts/post_kernel_aio_and_worker.cfg      |  6 +-
+ bsp-files/kickstarts/post_kernel_controller.cfg    |  6 +-
+ bsp-files/kickstarts/post_kernel_storage.cfg       |  6 +-
  bsp-files/kickstarts/post_usb_controller.cfg       |  4 +-
  bsp-files/kickstarts/pre_common_head.cfg           | 33 ++++++++++-
  bsp-files/kickstarts/pre_pkglist.cfg               | 19 +------
  bsp-files/kickstarts/pre_pkglist_lowlatency.cfg    | 18 +-----
- 8 files changed, 103 insertions(+), 47 deletions(-)
+ 8 files changed, 109 insertions(+), 47 deletions(-)
 
 diff --git a/bsp-files/kickstarts/post_common.cfg b/bsp-files/kickstarts/post_common.cfg
 index 8214008..fe84bbd 100644
@@ -113,15 +113,17 @@ index 8214008..fe84bbd 100644
  # Disable firewall
  systemctl disable firewalld
 diff --git a/bsp-files/kickstarts/post_kernel_aio_and_worker.cfg b/bsp-files/kickstarts/post_kernel_aio_and_worker.cfg
-index 5d90d31..c2e1a39 100644
+index 5d90d31..27340cf 100644
 --- a/bsp-files/kickstarts/post_kernel_aio_and_worker.cfg
 +++ b/bsp-files/kickstarts/post_kernel_aio_and_worker.cfg
-@@ -99,9 +99,9 @@ fi
+@@ -99,9 +99,11 @@ fi
  perl -pi -e 's/(GRUB_CMDLINE_LINUX=.*)\"/\1'"$KERN_OPTS"'\"/g' /etc/default/grub
  
  if [ -d /sys/firmware/efi ] ; then
 -  grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
-+  grub-mkconfig -o /boot/efi/EFI/centos/grub.cfg
++  mkdir -p /boot/grub/
++  ln -sf ../efi/EFI/BOOT/grub/grubenv /boot/grub/grubenv
++  grub-mkconfig -o /boot/efi/EFI/BOOT/grub/grub.cfg
  else
 -  grub2-mkconfig -o /boot/grub2/grub.cfg
 +  grub-mkconfig -o /boot/grub/grub.cfg
@@ -129,15 +131,17 @@ index 5d90d31..c2e1a39 100644
  
  %end
 diff --git a/bsp-files/kickstarts/post_kernel_controller.cfg b/bsp-files/kickstarts/post_kernel_controller.cfg
-index bed07e4..669009b 100644
+index bed07e4..2c4a9dc 100644
 --- a/bsp-files/kickstarts/post_kernel_controller.cfg
 +++ b/bsp-files/kickstarts/post_kernel_controller.cfg
-@@ -49,9 +49,9 @@ fi
+@@ -49,9 +49,11 @@ fi
  perl -pi -e 's/(GRUB_CMDLINE_LINUX=.*)\"/\1'"$KERN_OPTS"'\"/g' /etc/default/grub
  
  if [ -d /sys/firmware/efi ] ; then
 -  grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
-+  grub-mkconfig -o /boot/efi/EFI/centos/grub.cfg
++  mkdir -p /boot/grub/
++  ln -sf ../efi/EFI/BOOT/grub/grubenv /boot/grub/grubenv
++  grub-mkconfig -o /boot/efi/EFI/BOOT/grub/grub.cfg
  else
 -  grub2-mkconfig -o /boot/grub2/grub.cfg
 +  grub-mkconfig -o /boot/grub/grub.cfg
@@ -145,15 +149,17 @@ index bed07e4..669009b 100644
  
  %end
 diff --git a/bsp-files/kickstarts/post_kernel_storage.cfg b/bsp-files/kickstarts/post_kernel_storage.cfg
-index 7452d80..3d39640 100644
+index 7452d80..0eebf43 100644
 --- a/bsp-files/kickstarts/post_kernel_storage.cfg
 +++ b/bsp-files/kickstarts/post_kernel_storage.cfg
-@@ -43,9 +43,9 @@ fi
+@@ -43,9 +43,11 @@ fi
  perl -pi -e 's/(GRUB_CMDLINE_LINUX=.*)\"/\1'"$KERN_OPTS"'\"/g' /etc/default/grub
  
  if [ -d /sys/firmware/efi ] ; then
 -  grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
-+  grub-mkconfig -o /boot/efi/EFI/centos/grub.cfg
++  mkdir -p /boot/grub/
++  ln -sf ../efi/EFI/BOOT/grub/grubenv /boot/grub/grubenv
++  grub-mkconfig -o /boot/efi/EFI/BOOT/grub/grub.cfg
  else
 -  grub2-mkconfig -o /boot/grub2/grub.cfg
 +  grub-mkconfig -o /boot/grub/grub.cfg
